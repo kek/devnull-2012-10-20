@@ -104,6 +104,10 @@ function draw() {
 	}
 
 	pacman.draw();
+	pills.forEach(function (pill) {
+		context.fillStyle = "rgba(0,100,255,0.7)"
+		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
+	});
 }
 
 function logic() {
@@ -212,7 +216,7 @@ var Pacman = function(){
 
 var pacman;
 var gtimer = 0;
-
+var pills = [];
 
 function loop(){
 	setTimeout(function(){
@@ -325,6 +329,13 @@ function drawWalls(context, x, y) {
 	}
 }
 
+function placePills() {
+	return [
+		{x: 10, y: 1},
+		{x: 1, y: 3}
+	];
+}
+
 function init(seed) {
 	console.log("init:", seed);
 
@@ -332,6 +343,8 @@ function init(seed) {
 	for (var y = 0; y < mapInit.length; y++) {
 		map.push(mapInit[y].split(""));
 	}
+
+	pills = placePills();
 
 	openUpMap(map);
 	pacman = new Pacman();
@@ -348,6 +361,8 @@ document.querySelector("a").addEventListener("click", function() {
 	seed++;
 	init(seed);
 })
+
+
 </script>
 
 </html>
