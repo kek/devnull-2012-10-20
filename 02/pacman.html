@@ -121,6 +121,13 @@ function logic() {
 		var o = objects[i];
 		o.move();
 	}
+
+	var pillsHere = pills.filter(function (pill) { return pill.x == pacman.x && pill.y == pacman.y });
+	if(pillsHere.length > 0) {
+		pills = pills.filter(function (pill) { return pill != pillsHere[0] });
+		pacman.eatPill();
+
+	}
 }
 
 
@@ -233,6 +240,9 @@ Pacman.prototype.draw = function(){
 
 };
 
+Pacman.prototype.eatPill = function(){
+	console.log("*** Pacman.prototype.eatPill() is not implemented");
+};
 
 var Ghost = function(){
 	this.setValues.apply(this, arguments);
