@@ -232,12 +232,12 @@ function spawnGrazers() {
 			count--;
 		}
 
-		grazers.push(new Grazer(x, y));
+		createGrazer(x, y);
 	}
 }
 
 function createGrazer(x, y) {
-
+	grazers.push(new Grazer(x, y));
 }
 
 function moveGrazer(grazer) {
