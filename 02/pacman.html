@@ -154,7 +154,7 @@ var Pacman = function(){
 	}
 	
 	this.draw = function(){
-		var ts = tilesize;
+		var ts = tilesize/1.5;
 		context.fillStyle="#FFFF00";
         context.beginPath();
         var arcStart = 0;
@@ -174,7 +174,7 @@ var Pacman = function(){
         context.lineWidth = ts/2;
         context.strokeStyle = "#000000";
         context.stroke();
-        context.lineWidth = ts/3;
+        context.lineWidth = ts;
         context.strokeStyle = "#FFFF00";
         context.stroke();
 
