@@ -31,13 +31,13 @@ var tilesize = 20;
 var mapInit = [
 "################",
 "#              #",
+"#              #",
+"#              #",
+"#              #",
+"#              #",
+"#              #",
 "# ############ #",
-"#              #",
-"#              #",
-"# ############ #",
-"#              #",
-"# ############ #",
-"#              #",
+"# #            #",
 "# ############ #",
 "#              #",
 "################"
@@ -75,6 +75,14 @@ function draw() {
 	context.fillStyle = "black";
 	context.fillRect(0, 0, 320, 240);
 
+	context.fillStyle = "rgba(255, 255, 255, 0.3)";
+	for (var y = 0; y < map.length; y++) {
+		for (var x = 0; x < map[y].length; x++) {			
+			context.fillRect(x * tilesize + 1, y * tilesize + 1, tilesize - 2, tilesize - 2);
+		}		
+	}
+
+
 	for (var y = 0; y < map.length; y++) {
 		for (var x = 0; x < map[y].length; x++) {			
 			drawWalls(context, x, y);
@@ -91,9 +99,71 @@ function drawWalls(context, x, y) {
 		var top = wallAt(x, y - 1);
 		var right = wallAt(x + 1, y);
 		var bottom = wallAt(x, y + 1);
+		var inset = 8; 
 
 		context.fillStyle = "white";
-		context.fillRect(x * tilesize, y * tilesize, tilesize, tilesize);
+
+		var rx;
+		var ry; 
+		var rw;
+		var rh;
+
+		if (left && right) {
+
+			rx = x * tilesize;
+			ry = y * tilesize + inset;
+			rw = tilesize;
+			rh = tilesize - inset - inset;
+
+		} else if (left) {
+
+			rx = x * tilesize;
+			ry = y * tilesize + inset;
+			rw = tilesize / 2;
+			rh = tilesize - inset - inset;
+
+		} else if (right) {
+
+			console.log("right");
+
+			var w2 = tilesize / 2 + inset;
+			rx = x * tilesize + tilesize / 2;
+			ry = y * tilesize + inset;
+			rw = w2;
+			rh = tilesize - inset - inset;
+
+		}
+
+		if (rx) {
+				context.fillRect(rx, ry, rw, rh);
+		}
+
+		if (top && bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize;
+			rw = tilesize - inset - inset;
+			rh = tilesize;
+
+		} else if (top) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize;
+			rw = tilesize - inset - inset;
+			rh = tilesize / 2;
+
+		} else if (bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize + tilesize / 2;
+			rw = tilesize - inset - inset;
+			rh = tilesize / 2;
+
+		}
+
+		if (rx) {
+				context.fillRect(rx, ry, rw, rh);
+		}
 	}
 }
 
