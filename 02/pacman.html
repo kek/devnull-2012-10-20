@@ -96,7 +96,6 @@ function draw() {
 		}		
 	}
 
-
 	for (var y = 0; y < map.length; y++) {
 		for (var x = 0; x < map[y].length; x++) {			
 			drawWalls(context, x, y);
@@ -113,7 +112,6 @@ function draw() {
 		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
 	});
 }
-
 
 function logic() {
 
@@ -230,7 +228,7 @@ Pacman.prototype.draw = function(){
 
     context.arc(x+ts/2, y+ts/2, ts/(2 * factor), arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
     context.lineWidth = ts / factor;
-    context.strokeStyle = "#FFFF00";
+    context.strokeStyle = this.color;
     context.stroke();
 
 };
