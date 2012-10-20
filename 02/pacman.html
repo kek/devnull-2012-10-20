@@ -33,18 +33,36 @@ var tilesize = 20;
 var mapInit = [
 "################",
 "#              #",
+"# ############ #",
 "#              #",
-"# ############ #",
-"# ############ #",
-"# ############ #",
-"# ############ #",
-"# ############ #",
 "#              #",
 "# ############ #",
 "#              #",
-"################",
+"# ############ #",
+"#              #",
+"# ############ #",
+"#              #",
+"################"
 ];
 
+map = openUpMap(map);
+
+map.forEach(function (row) {
+	console.log(row);
+});
+
+function openUpMap(map) {
+	var rnd = new MersenneTwister(1);
+
+	for(i = 0; i < map.length; i++) {
+		if(map[i] == "# ############ #") {
+			var hole = Math.floor(rnd.random() * (map[i].length - 2));
+			;
+			console.log(hole);
+		}
+	}
+	return map;
+}
 
 function wallAt(x, y) {
 
