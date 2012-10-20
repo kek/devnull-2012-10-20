@@ -46,14 +46,15 @@ var mapInit = [
 var map = [];
 
 function openUpMap(map) {
+	var NUMHOLES = 3
 	var rnd = new MersenneTwister(1);
 
 	for(var i = 0; i < map.length; i++) {
 		if(map[i].join("") == "# ############ #") {
 			while(map[i].filter(function (cell) {
 				console.log(cell);
-				cell == " ";
-			}).length < 5) {
+				return cell == " ";
+			}).length < NUMHOLES + 2) {
 				var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
 				if(map[i][hole-1] == "#" && map[i][hole+1] == "#") {
 					map[i][hole] = " ";
