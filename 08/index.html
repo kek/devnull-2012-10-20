@@ -179,8 +179,21 @@ Grazer.prototype = {
     return Math.abs(this.x - food.x) + Math.abs(this.y - food.y);
   },
 
-  moveTowardkey: function(food) {
-    return null; // todo
+  moveToward: function(food) {
+    var dx = food.x - this.x;
+    var dy = food.y - this.y;
+
+    if(dx > 0) {
+      this.x += 1;
+    } else if(dx < 0) {
+      this.x -= 1;
+    }
+    
+    if(dy > 0) {
+      this.y += 1;
+    } else if(dy < 0) {
+      this.y -= 1;
+    }
   },
   moveRandom: function(){
 	  this.x += randomInt(2)==0 ? 1 : -1;
@@ -268,7 +281,7 @@ function createGrazer(x, y) {
 function moveGrazer(grazer) {
 	var nearbyFoods = grazer.nearbyFoods();
 	if( nearbyFoods.length>0 ){
-		grazer.moveTowards(nearbyFoods[0]);
+		grazer.moveToward(nearbyFoods[0]);
 		if( grazer.canEatFood(nearbyFoods[0]) ){
 			grazer.eatFood(nearbyFoods[0]);
 		}
