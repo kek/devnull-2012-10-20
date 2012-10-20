@@ -267,7 +267,7 @@ function spawnFood() {
 function spawnGrazers() {
 	var c = 0;
 	for (var i = 0; i < 10; i++) {
-		createGrazer(food[i].x, food[i].y + c++ + 5);
+		createGrazer(food[i].x, food[i].y + c + 3);
 	}
 	return;
 
@@ -319,10 +319,6 @@ function updateGrazers() {
 			console.log("Die!")
 		} else {
 
-			// TODO: at a food to eat?
-			// TODO: find next position
-			// TODO: move
-			moveGrazer(grazer);
 			var f = foodAt(grazer.x, grazer.y);
 			if (f) {
 				// eat food and remove it
@@ -331,10 +327,8 @@ function updateGrazers() {
 				console.log("Eat!")
 			}
 
-			grazer.y--;
-
+			moveGrazer(grazer);
 		}
-
 	}
 
 }
