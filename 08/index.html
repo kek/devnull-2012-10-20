@@ -189,7 +189,36 @@ var grazers = [];
 var rnd;
 
 
+function randomInt(max) {
+	return Math.floor(rnd.random() * 100);
+}
+
+
+function foodAt(x, y) {
+	var a = food.filter(function(item) {
+		return item.x == x && item.y == y;
+	});
+
+	return a.length > 0;
+}
+
 function spawnFood() {
+
+	for (var i = 0; i < 10; i++) {
+
+		var x = randomInt(100);
+		var y = randomInt(100);
+		var count = 500;
+
+		while (foodAt(x, y) && count > 0) {
+			x = randomInt(100);
+			y = randomInt(100);
+			count--;
+		}
+
+
+		food.push(new Food(x, y));
+	}
 
 }
 
@@ -211,6 +240,8 @@ function moveGrazer(grazer) {
 		rnd = new MersenneTwister(0);
 		spawnGrazers();
 		spawnFood();
+		draw();
+		loop();
 	}
 
 	
@@ -218,8 +249,6 @@ function moveGrazer(grazer) {
 	var ctx=c.getContext("2d");
 	
 	init();
-	draw();
-
 
 	function draw(){
 		ctx.fillStyle="#AAFFAA";
@@ -237,7 +266,7 @@ function moveGrazer(grazer) {
 	}
 	
 	function logic(){
-	
+		spawnFood();
 
 	}
 
