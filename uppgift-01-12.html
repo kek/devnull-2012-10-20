@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Devnull</title>
+	
+    <link rel="stylesheet" href="lib/dijit/themes/dijit.css">
+    <link rel="stylesheet" href="lib/dijit/themes/tundra/tundra.css">
+
+	<link href='styles/styles.css' rel='stylesheet' type='text/css'>
+
+	<script src="js/dojo/dojo.js" data-dojo-config='isDebug: true, async: true, parseOnLoad: true, paths: { "devnull": "../devnull" }'></script>
+
+</head>
+<body class="tundra">
+	<div id="page">
+		<h1></h1>
+		
+		
+	</div>
+
+
+<script>
+
+    // load requirements for declarative widgets in page content
+    require([
+    	"dojo", 
+		"dojo/domReady!", 
+		"dojo/parser"
+    ], 
+
+	function(
+		dojo, 
+		domReady, 
+		parser
+	) {
+
+		console.log("xxx")
+
+
+	});
+
+</script>
+
+</body>
+</html>
