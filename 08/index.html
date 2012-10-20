@@ -309,6 +309,39 @@ function moveGrazer(grazer) {
 	}
 }
 
+function updateHunters() {
+
+	for (var i = hunters.length - 1; i >= 0; i--) {
+
+		var hunter = hunters[i];
+
+		hunter.ticks++;
+
+		if (!hunter.isAlive()) {
+			// remove item at i
+			hunters.splice(i, 1);
+			console.log("Die hunter!", hunter.eaten, hunters.length, gticks);
+		} else {
+
+			var g = grazierAdjacent(hunter.x, hunter.y);
+			if (g) {
+				// eat food and remove it
+				hunter.eaten++;
+				grazers.splice(grazers.indexOf(g), 1);
+				console.log("Eat grazer!", hunter.eaten, hunters.length, gticks);
+
+				if (grazer.eaten >= 5) {
+					spawnRandomGrazer(grazer);
+				}
+			}
+
+			moveGrazer(grazer);
+		}
+	}
+
+
+}
+
 function updateGrazers() {
 
 	for (var i = grazers.length - 1; i >= 0; i--) {
