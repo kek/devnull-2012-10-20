@@ -423,7 +423,7 @@ function updateHunters() {
 //				console.log("Eat grazer!", hunter.eaten, hunters.length, gticks);
 
 				if (hunter.eaten >= 5) {
-					spawnRandomHunter(grazer);
+//					spawnRandomHunter(grazer);
 				}
 			}
 
@@ -514,7 +514,7 @@ function updateGrazers() {
 	function logic(){
 		spawnFood();
 		updateGrazers();
-//		updateHunters();
+		updateHunters();
 	}
 
 	function loop(){
