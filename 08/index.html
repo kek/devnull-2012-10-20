@@ -178,11 +178,25 @@ function randomInt(max) {
 }
 
 
+function foodAt(x, y) {
+	var a = food.filter(function(item) {
+		return item.x == x && item.y == y;
+	});
+
+	return a.length > 0;
+}
+
 function spawnFood() {
 	for (var i = 0; i < 10; i++) {
 
 		var x = randomInt(100);
 		var y = randomInt(100);
+
+		while (foodAt(x, y)) {
+			x = randomInt(100);
+			y = randomInt(100);
+		}
+
 
 		food.push(new Food(x, y));
 	}
