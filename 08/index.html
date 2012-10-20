@@ -349,9 +349,33 @@ function spawnGrazers() {
 	}
 }
 
+function spawnHunters() {
+
+	for (var i = 0; i < 5; i++) {
+
+		var x = randomInt(100);
+		var y = randomInt(100);
+		var count = 500;
+
+		while ((foodAt(x, y) || grazerAt(x, y)) && count > 0) {
+			x = randomInt(100);
+			y = randomInt(100);
+			count--;
+		}
+
+		createHunter(x, y);
+	}
+}
+
 function createGrazer(x, y) {
 	var g = new Grazer(x, y);
 	grazers.push(g);
+	return g;
+}
+
+function createHunter(x, y) {
+	var g = new Hunter(x, y);
+	hunters.push(g);
 	return g;
 }
 
@@ -363,7 +387,7 @@ function spawnRandomGrazer(grazer) {
 		g.moveRandom();
 	}
 
-	console.log("Spawn grazer");
+//	console.log("Spawn grazer");
 	grazers.push(g);
 }
 
@@ -455,6 +479,7 @@ function updateGrazers() {
 		rnd = new MersenneTwister(seed);
 		spawnFood();
 		spawnGrazers();
+		spawnHunters();
 		draw();
 		loop();
 	}
