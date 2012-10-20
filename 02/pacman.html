@@ -103,22 +103,17 @@ function draw() {
 		}		
 	}
 
-	pacman.draw();
+	for (var i = 0; i < objects.length; i++) {
+		var o = objects[i];
+		o.draw();
+	}
+	
 	pills.forEach(function (pill) {
 		context.fillStyle = "rgba(0,100,255,0.7)"
 		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
 	});
 }
 
-function logic() {
-
-	for (var i = 0; i < objects.length; i++) {
-		var o = objects[i];
-		o.draw();
-	}
-
-	pacman.draw();
-}
 
 function logic() {
 
@@ -166,8 +161,23 @@ Base.prototype = {
 		return v;
 	}, 
 
-	move: function() {
+	move: function(){
+	
+		if (new Date().getTime() - this.isMoving > this.speed) {
+			this.isMoving = 0;
+			this.x += this.ax;
+			this.y += this.ay;
+			this.ax = 0;
+			this.ay = 0;
+		}
 
+		if (this.isMoving == 0) {
+			if (!wallAt(this.x + this.dx, this.y + this.dy)) {
+				this.ax = this.dx;
+				this.ay = this.dy;
+				this.isMoving = new Date().getTime();
+			}
+		}  
 	}, 
 
 	draw: function( ) {
@@ -252,57 +262,14 @@ Ghost.prototype = new Base();
 	*/
 Ghost.prototype.draw = function(){
 	var ts = tilesize;
-	// context.fillStyle="#FFFF00";
- //    context.beginPath();
- //    var arcStart = 0;
- //    var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
- //    if(this.ax==-1){
- //    	arcStart=Math.PI;
- //    }else if(this.ax==1){
- //    	arcStart=0;
- //    }else if(this.ay==-1){
- //    	arcStart=Math.PI*3/2;
- //    }else if(this.ay==1){
- //    	arcStart=Math.PI/2;
- //    }
-
     var anim = this.isMoving > 0 ? this.animValue() : 0;
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
 
 	context.fillStyle = this.color; 
 	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
-
-    // context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
-    // //context.fillStyle = "#FFFF00";
-    // //context.fill();
-    // context.lineWidth = ts/2;
-    // context.strokeStyle = "#000000";
-    // context.stroke();
-    // context.lineWidth = ts;
-    // context.strokeStyle = "#FFFF00";
-    // context.stroke();
-
 };
 
-Ghost.prototype.move = function(){
-	
-	if (new Date().getTime() - this.isMoving > this.speed) {
-		this.isMoving = 0;
-		this.x += this.ax;
-		this.y += this.ay;
-		this.ax = 0;
-		this.ay = 0;
-	}
-
-	if (this.isMoving == 0) {
-		if (!wallAt(this.x + this.dx, this.y + this.dy)) {
-			this.ax = this.dx;
-			this.ay = this.dy;
-			this.isMoving = new Date().getTime();
-		}
-	}  
-};
 
 
 var pacman;
