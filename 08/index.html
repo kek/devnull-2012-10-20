@@ -196,8 +196,20 @@ function createGrazer(x, y) {
 
 }
 
+function isFoodCloseBy(grazer){
+	for (var i=0; i<food.length; i++){
+		if( distance(grazer, food[i])<=5 ){
+			return food[i];
+		}
+	}
+	return false;
+}
+
 function moveGrazer(grazer) {
-	
+	var foodCloseBy = isFoodCloseBy(grazer);
+	if( foodCloseBy!=false ){
+		
+	}
 }
 
 
