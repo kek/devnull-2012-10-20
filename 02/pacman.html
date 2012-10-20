@@ -125,6 +125,14 @@ function logic() {
 		pills = pills.filter(function (pill) { return pill != pillsHere[0] });
 		pacman.eatPill();
 	}
+
+	objects.forEach(function (object) {
+		if(object != pacman) {
+			if(pacman.x == object.x && pacman.y == object.y) {
+				object.collideWith(pacman);
+			}
+		}
+	});
 }
 
 
@@ -133,7 +141,6 @@ var Base = function() {
 };
 
 Base.prototype = {
-	
 	setValues: function(x, y, color, speed1, speed2, dx, dy) {
 		this.x = x; 
 		this.y = y; 
@@ -186,8 +193,21 @@ Base.prototype = {
 
 	draw: function( ) {
 
+	},
+
+	collideWith: function( ) {
+
 	}
+
 }
+
+Base.prototype.die = function() {
+	var self = this;
+	objects = objects.filter(function (object) {
+		return object != self;
+	});
+};
+
 
 var Pacman = function() {
 	this.setValues.apply(this, arguments);
@@ -278,6 +298,15 @@ function randomInt(max) {
 	rnd.random();
 	return Math.floor(rnd.random() * 2312314123) % max;
 }
+
+Ghost.prototype.collideWith = function(other){
+	console.log("Ghost collided with", other);
+	if (other.superpowered > new Date().getTime()) {
+		this.die();
+	} else {
+		other.die();
+	}
+};
 
 Ghost.prototype.move = function(){
 	//TODO call basecalss
@@ -443,9 +472,11 @@ function drawWalls(context, x, y) {
 }
 
 function placePills() {
+	
 	return [
 		{x: 10, y: 1},
-		{x: 1, y: 3}
+		{x: 1, y: 3},
+		{x: map[0].length-2, y: map.length-2}
 	];
 }
 
