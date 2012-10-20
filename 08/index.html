@@ -234,11 +234,24 @@ function spawnFood() {
 }
 
 function spawnGrazers() {
+	for (var i = 0; i < 10; i++) {
 
+		var x = randomInt(100);
+		var y = randomInt(100);
+		var count = 500;
+
+		while (foodAt(x, y) && count > 0) {
+			x = randomInt(100);
+			y = randomInt(100);
+			count--;
+		}
+
+		createGrazer(x, y);
+	}
 }
 
 function createGrazer(x, y) {
-
+	grazers.push(new Grazer(x, y));
 }
 
 
@@ -254,9 +267,35 @@ function moveGrazer(grazer) {
 	}
 }
 
+function updateGrazers() {
+
+	for (var i = grazers.length - 1; i >= 0; i--) {
+
+		var grazer = grazers[i];
+
+		grazer.tick++;
+
+		if (!grazer.isAlive()) {
+			// remove item at i
+			grazers.splice(i, 1);
+		} else {
+
+			// TODO: at a food to eat?
+			// TODO: find next position
+			// TODO: move
+
+
+		}
+
+	}
+
+}
 
 
 	function init() {
+		ctx.fillStyle="rgb(0, 0, 0)";
+		ctx.fillRect(0,0,100,100);
+
 		rnd = new MersenneTwister(0);
 		spawnGrazers();
 		spawnFood();
@@ -271,22 +310,23 @@ function moveGrazer(grazer) {
 	init();
 
 	function draw(){
-		ctx.fillStyle="#AAFFAA";
+		ctx.fillStyle="rgba(0, 0, 0, 0.1)";
 		ctx.fillRect(0,0,100,100);
 		
-		ctx.fillStyle="#FFAAAA";
+		ctx.fillStyle="#00FF00";
 		for (var i=0; i<food.length; i++){
 			ctx.fillRect(food[i].x,food[i].y,1,1);
 		}
 
-		ctx.fillStyle="#AAAAFF";
+		ctx.fillStyle="#FFFFFF";
 		for (var i=0; i<grazers.length; i++){
 			ctx.fillRect(grazers[i].x,grazers[i].y,1,1);
 		}
 	}
 	
 	function logic(){
-		spawnFood();
+//		spawnFood();
+		updateGrazers();
 
 	}
 
