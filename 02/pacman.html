@@ -21,40 +21,51 @@
 	</head>
 	<body>
 	<div id="test"></div>
-	<canvas id="myCanvas" width="320" height="240"></canvas>
+	<canvas id="myCanvas" width="420" height="340"></canvas>
 
 	<br> <a href="#">Seed</a>
 	<script src="http://www.google.com/jsapi"></script>
 	<script>google.load("jquery", "1.3")</script>
 	<script type="text/javascript" src="random.js"></script>
 <script>
-	
+
+var seed = 0;
 var tilesize = 20;
 var mapInit = [
-"################",
-"#              #",
-"# ############ #",
-"#              #",
-"#              #",
-"# ############ #",
-"#              #",
-"# ############ #",
-"#              #",
-"# ############ #",
-"#              #",
-"################"
+"#####################",
+"#                   #",
+"# # ############### #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################"
 ];
 
 var map = [];
 
-function openUpMap(map) {
-	var rnd = new MersenneTwister(1);
+function openUpMap(map, seed) {
+	var NUMHOLES = 2;
+	var rnd = new MersenneTwister(seed);
 
-	for(i = 0; i < map.length; i++) {
-		if(map[i] == "# ############ #") {
-			var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
-			;
-			console.log(hole);
+	for(var i = 1; i < map.length-1; i++) {
+
+		while(map[i].filter(function (cell) {
+			return cell == " ";
+		}).length < NUMHOLES + 2) {
+			var hole = Math.floor(rnd.random() * (map[i].length - 4));
+			if(map[i][hole-1] == "#" && map[i][hole+1] == "#") {
+				map[i][hole] = " ";
+			} 
 		}
 	}
 	return map;
@@ -75,7 +86,15 @@ var context = c.getContext("2d");
 function draw() {
 
 	context.fillStyle = "black";
-	context.fillRect(0, 0, 320, 240);
+	context.fillRect(0, 0, c.width, c.height);
+
+	context.fillStyle = "rgba(255, 255, 255, 0.3)";
+	for (var y = 0; y < map.length; y++) {
+		for (var x = 0; x < map[y].length; x++) {			
+			context.fillRect(x * tilesize + 1, y * tilesize + 1, tilesize - 2, tilesize - 2);
+		}		
+	}
+
 
 	for (var y = 0; y < map.length; y++) {
 		for (var x = 0; x < map[y].length; x++) {			
@@ -87,7 +106,7 @@ function draw() {
 }
 
 function logic() {
-	pacman.move();
+	pacman.draw();
 }
 
 var Pacman = function(){
@@ -95,6 +114,11 @@ var Pacman = function(){
 	this.y=0;
 	this.dx=0;
 	this.dy=0;
+	this.a1x=0;
+	this.a1y=0;
+	this.a2x=0;
+	this.a2y=0;
+	this.isMoving=0;
 	
 	this.init = function(){
 		for(var x=0; x<16; x++){
@@ -102,11 +126,14 @@ var Pacman = function(){
 				if( !wallAt(x,y) ){
 					this.x = x;
 					this.y = y;
+					this.a1x=this.x*tilesize;
+					this.a1y=this.y*tilesize;
+					console.log("init pacman x=", this.x, " y=", this.y);
 					return;
 				}
 			}
 		}
-		//console.log("init pacman x=", this.x, " y=", this.y)
+		
 	}
 	this.init();
 	
@@ -116,12 +143,22 @@ var Pacman = function(){
 		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
 	}
 	
+	this.getAnimX = function(){
+		var ts = new Date().getTime();
+		return this.a1x+(this.a2x-this.a1x)*250/Math.max(250,ts-this.isMoving);
+	}
+	
+	this.getAnimY = function(){
+		var ts = new Date().getTime();
+		return this.a1y+(this.a2y-this.a1y)*250/Math.max(250,ts-this.isMoving);
+	}
+	
 	this.draw = function(){
 		var ts = tilesize;
 		context.fillStyle="#FFFF00";
         context.beginPath();
         var arcStart = 0;
-        var arcEnd = Math.PI * (new Date().getTime()%100/1000);
+        var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
         if(this.dx==-1){
         	arcStart=Math.PI;
         }else if(this.dx==1){
@@ -131,7 +168,7 @@ var Pacman = function(){
         }else if(this.dy==1){
         	arcStart=Math.PI/2;
         }
-        context.arc(this.x*ts+ts/2,this.y*ts+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+        context.arc(this.getAnimX()+ts/2,this.getAnimY()+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
         //context.fillStyle = "#FFFF00";
         //context.fill();
         context.lineWidth = ts/2;
@@ -143,14 +180,30 @@ var Pacman = function(){
 
 	}
 	this.move = function(){
-		if( !wallAt(this.x+this.dx, this.y+this.dy) ){
-			this.x+=this.dx;
-			this.y+=this.dy;
+		console.log(" move");
+		if(  this.isMoving==0 || new Date().getTime()-this.isMoving>250 ){
+			console.log("test move");
+			if( !wallAt(this.x+this.dx, this.y+this.dy) ){
+				console.log("move to new");
+				this.isMoving = new Date().getTime();
+				this.a1x=this.x*tilesize;
+				this.a1y=this.y*tilesize;
+				
+				this.x+=this.dx;
+				this.y+=this.dy;
+				
+				this.a2x=this.x*tilesize;
+				this.a2y=this.y*tilesize;
+			}else{
+				this.isMoving = 0;
+				console.log("stop move");
+			}
 		}
 	}
 };
 
 var pacman;
+var gtimer = 0;
 
 
 function loop(){
@@ -158,6 +211,7 @@ function loop(){
 		draw();
 		logic();
 		loop();
+		gtimer++;
 	},0);
 }
 
@@ -188,27 +242,104 @@ function drawWalls(context, x, y) {
 		var top = wallAt(x, y - 1);
 		var right = wallAt(x + 1, y);
 		var bottom = wallAt(x, y + 1);
+		var inset = 8; 
 
 		context.fillStyle = "white";
-		context.fillRect(x * tilesize, y * tilesize, tilesize, tilesize);
+
+		var rx;
+		var ry; 
+		var rw;
+		var rh;
+
+		if (!left && !right && !top && !bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize + inset;
+			rw = tilesize - inset - inset;
+			rh = tilesize - inset - inset;
+
+		}
+
+		if (left && right) {
+
+			rx = x * tilesize;
+			ry = y * tilesize + inset;
+			rw = tilesize;
+			rh = tilesize - inset - inset;
+
+		} else if (left) {
+
+			rx = x * tilesize;
+			ry = y * tilesize + inset;
+			rw = tilesize / 2;
+			rh = tilesize - inset - inset;
+
+		} else if (right) {
+
+			var w2 = tilesize / 2 + inset;
+			rx = x * tilesize + tilesize / 2;
+			ry = y * tilesize + inset;
+			rw = w2;
+			rh = tilesize - inset - inset;
+
+		}
+
+		if (rx) {
+				context.fillRect(rx, ry, rw, rh);
+		}
+
+		if (top && bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize;
+			rw = tilesize - inset - inset;
+			rh = tilesize;
+
+		} else if (top) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize;
+			rw = tilesize - inset - inset;
+			rh = tilesize / 2;
+
+		} else if (bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize + tilesize / 2;
+			rw = tilesize - inset - inset;
+			rh = tilesize / 2;
+
+		}
+
+		if (rx) {
+				context.fillRect(rx, ry, rw, rh);
+		}
 	}
 }
 
-function init( ) {
+function init(seed) {
+	console.log("init:", seed);
+
+	map = [];
 	for (var y = 0; y < mapInit.length; y++) {
 		map.push(mapInit[y].split(""));
 	}
-	openUpMap(mapInit);
 
-	map.forEach(function (row) {
-		console.log(row);
-	});
-	
+	openUpMap(map);
 	pacman = new Pacman();
 	loop();
+
+	// map.forEach(function (row) {
+	// 	console.log(row.join(""));
+	// });
 }
 
-init();
+init(seed);
+
+document.querySelector("a").addEventListener("click", function() {
+	seed++;
+	init(seed);
+})
 </script>
 
 </html>
