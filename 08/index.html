@@ -224,7 +224,7 @@ var rnd;
 
 
 function randomInt(max) {
-	return Math.floor(rnd.random() * 100);
+	return Math.floor(rnd.random() * max);
 }
 
 
@@ -233,7 +233,7 @@ function foodAt(x, y) {
 		return item.x == x && item.y == y;
 	});
 
-	return a.length > 0;
+	return a.length > 0 ? a[0] : null;
 }
 
 function spawnFood() {
@@ -257,6 +257,13 @@ function spawnFood() {
 }
 
 function spawnGrazers() {
+	var c = 0;
+	for (var i = 0; i < 10; i++) {
+		createGrazer(food[i].x, food[i].y + c++ + 5);
+	}
+	return;
+
+
 	for (var i = 0; i < 10; i++) {
 
 		var x = randomInt(100);
@@ -301,11 +308,18 @@ function updateGrazers() {
 		if (!grazer.isAlive()) {
 			// remove item at i
 			grazers.splice(i, 1);
+			console.log("Die!")
 		} else {
 
-			// TODO: at a food to eat?
-			// TODO: find next position
-			// TODO: move
+			var f = foodAt(grazer.x, grazer.y);
+			if (f) {
+				// eat food and remove it
+				grazer.eaten++;
+				food.splice(food.indexOf(f), 1);
+				console.log("Eat!")
+			}
+
+			grazer.y--;
 
 
 		}
@@ -320,8 +334,8 @@ function updateGrazers() {
 		ctx.fillRect(0,0,100,100);
 
 		rnd = new MersenneTwister(0);
-		spawnGrazers();
 		spawnFood();
+		spawnGrazers();
 		draw();
 		loop();
 	}
@@ -357,7 +371,6 @@ function updateGrazers() {
 			draw();
 			logic();
 			loop();
-			console.log("tick")
 		},1000);
 	}
 	loop();
