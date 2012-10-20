@@ -7,5 +7,17 @@
   <body>
     <h1>/dev/null</h1>
     <script src="//ajax.googleapis.com/ajax/libs/dojo/1.8.0/dojo/dojo.js"></script>
+    <form action="/register" method="get">
+    	REGISTER<br>
+    	Username: <input type="text" name="username" value=""><br>
+    	Password: <input type="text" name="password" value=""><br>
+    	<input type="submit">
+    </form>
+    <form action="/change_password" method="get">
+    	CHANGE PASSWORD<br>
+    	<input type="hidden" name="username" value=""><br>
+    	Password: <input type="text" name="password" value=""><br>
+    	<input type="submit">
+    </form>
   </body>
 </html>
