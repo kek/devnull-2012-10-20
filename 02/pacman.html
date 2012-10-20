@@ -28,7 +28,7 @@
 <script>
 	
 var tilesize = 20;
-var map = [
+var mapInit = [
 "################",
 "#              #",
 "#              #",
@@ -42,6 +42,7 @@ var map = [
 "#              #",
 "################",
 ];
+
 
 function wallAt(x, y) {
 
@@ -82,6 +83,16 @@ function drawWalls(context, x, y) {
 	}
 }
 
+function init( ) {
+
+	map = [];
+	for (var y = 0; y < mapInit.length; y++) {
+		map.push(mapInit[y].split(""));
+	}
+
+}
+
+init();
 draw();
 </script>
 
