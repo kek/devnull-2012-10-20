@@ -21,7 +21,7 @@
 	</head>
 	<body>
 	<div id="test"></div>
-	<canvas id="myCanvas" width="320" height="240"></canvas>
+	<canvas id="myCanvas" width="420" height="340"></canvas>
 
 	<br> <a href="#">Seed</a>
 	<script type="text/javascript" src="random.js"></script>
@@ -29,18 +29,23 @@
 	
 var tilesize = 20;
 var mapInit = [
-"################",
-"#              #",
-"#              #",
-"#              #",
-"#              #",
-"#              #",
-"#              #",
-"# ############ #",
-"# #            #",
-"# ############ #",
-"#              #",
-"################"
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################",
+"#                   #",
+"# ################# #",
+"#                   #",
+"#####################"
 ];
 
 var map = [];
@@ -82,7 +87,7 @@ var context = c.getContext("2d");
 function draw() {
 
 	context.fillStyle = "black";
-	context.fillRect(0, 0, 320, 240);
+	context.fillRect(0, 0, c.width, c.height);
 
 	context.fillStyle = "rgba(255, 255, 255, 0.3)";
 	for (var y = 0; y < map.length; y++) {
