@@ -171,6 +171,10 @@ Grazer.prototype = {
   },
   moveToward: function(food) {
     return null; // todo
+  },
+  moveRandom: function(){
+	  this.x += randomInt(2)==0 ? 1 : -1;
+	  this.y += randomInt(2)==0 ? 1 : -1;
   }
 }
 
@@ -227,19 +231,14 @@ function createGrazer(x, y) {
 
 }
 
-function isFoodCloseBy(grazer){
-	for (var i=0; i<food.length; i++){
-		if( distance(grazer, food[i])<=5 ){
-			return food[i];
-		}
-	}
-	return null;
-}
 
 function moveGrazer(grazer) {
 	var nearbyFoods = grazer.nearbyFoods();
 	if( nearbyFoods.length>0 ){
 		grazer.moveTowards(nearbyFoods[0]);
+		if( grazer.canEatFood(nearbyFoods[0]) ){
+			grazer.eatFood(nearbyFoods[0]);
+		}
 	}else{
 		grazer.moveRandom();
 	}
