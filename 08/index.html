@@ -153,23 +153,33 @@ var Grazer = function(x, y) {
 	this.y = y;
 	this.ticks = 0;
 	this.eaten = 0;
+
 }
 
 Grazer.prototype = {
 	isAlive: function() {
 		return this.ticks < 20;	
 	},
-  distanceTo: function(food) {
-    return Math.abs(this.x - food.x) + Math.abs(this.y - food.y)
-  },
+
   nearbyFoods: function() {
+    var self = this;
     return food.filter(function(f) {
-      return this.distanceTo(f) >= 4;
+      return self.distanceTo(f) <= 4;
     }).sort(function(x,y) {
-      return this.distanceTo(x) > this.distanceTo(y);
-    })
+      return self.distanceTo(x) > self.distanceTo(y);
+    });    
   },
-  moveToward: function(food) {
+
+  nearestFood: function() {
+    var a = this.nearbyFoods();
+    return a.length > 0 ? a[0] : null;
+  },
+
+  distanceTo: function(food) {
+    return Math.abs(this.x - food.x) + Math.abs(this.y - food.y);
+  },
+
+  moveTowardkey: function(food) {
     return null; // todo
   }
 }
@@ -263,7 +273,7 @@ function moveGrazer(grazer) {
 	}
 	
 	function logic(){
-		spawnFood();
+		//spawnFood();
 
 	}
 
