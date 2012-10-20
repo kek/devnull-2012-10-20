@@ -1,0 +1,1 @@
+Generate a Pacman(-esque) random map from a small set of tiles. Create both visual and logical presentation of map, so it would be possible to add a ‘player’ later. There should be at least three different corridors. 
