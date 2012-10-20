@@ -122,15 +122,10 @@ function logic() {
 		o.move();
 	}
 
-	// console.log(pills.filter(function (pill) { pill.x == pacman.x && pill.y == pacman.y }));
-	pills.forEach(function (pill) {
-		// console.log(pill.x,pill.y);	
-	});
 	var pillsHere = pills.filter(function (pill) { return pill.x == pacman.x && pill.y == pacman.y });
 	if(pillsHere.length > 0) {
 		pills = pills.filter(function (pill) { return pill != pillsHere[0] });
-		console.log("PILL");
-		// pacman.eatPill();
+		pacman.eatPill();
 
 	}
 }
@@ -237,6 +232,9 @@ Pacman.prototype.draw = function(){
 
 };
 
+Pacman.prototype.eatPill = function(){
+	console.log("*** Pacman.prototype.eatPill() is not implemented");
+};
 
 var Ghost = function(){
 	this.setValues.apply(this, arguments);
