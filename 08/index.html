@@ -236,6 +236,14 @@ function foodAt(x, y) {
 	return a.length > 0 ? a[0] : null;
 }
 
+
+function grazerAt(x, y) {
+	var a = grazer.filter(function(item) {
+		return item.x == x && item.y == y;
+	});
+	return a.length > 0 ? a[0] : null;
+}
+
 function spawnFood() {
 
 	for (var i = 0; i < 10; i++) {
