@@ -2,8 +2,14 @@
 	<head>
 		<title>Test</title>
 		<!--  script src="lib/jquery-1.7.1.min.js"></script -->
+		<style>
+
+			body {
+				background: #c0c0c0;
+			}
+		</style>
 		<script>
-		
+
 		
 		//$(document).ready(function(){
 			
@@ -24,6 +30,8 @@
 var tilesize = 20;
 var map = [
 "################",
+"#              #",
+"#              #",
 "# ############ #",
 "# ############ #",
 "# ############ #",
@@ -36,6 +44,11 @@ var map = [
 ];
 
 function wallAt(x, y) {
+
+	if (y < 0 || y >= map.length || x < 0 || x >= map[y].length) {
+		return false;
+	}
+
 	return map[y][x] === "#";
 }
 
@@ -44,7 +57,32 @@ var context = c.getContext("2d");
 
 function draw() {
 
+	context.fillStyle = "black";
+	context.fillRect(0, 0, 320, 240);
+
+	for (var y = 0; y < map.length; y++) {
+		for (var x = 0; x < map[y].length; x++) {			
+			drawWalls(context, x, y);
+		}		
+	}
+
 }
+
+function drawWalls(context, x, y) {
+
+	if (wallAt(x, y)) {
+
+		var left = wallAt(x - 1, y);
+		var top = wallAt(x, y - 1);
+		var right = wallAt(x + 1, y);
+		var bottom = wallAt(x, y + 1);
+
+		context.fillStyle = "white";
+		context.fillRect(x * tilesize, y * tilesize, tilesize, tilesize);
+	}
+}
+
+draw();
 </script>
 
 </html>
