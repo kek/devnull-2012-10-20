@@ -158,7 +158,20 @@ var Grazer = function(x, y) {
 Grazer.prototype = {
 	isAlive: function() {
 		return this.ticks < 20;	
-	}
+	},
+  distanceTo: function(food) {
+    return Math.abs(this.x - food.x) + Math.abs(this.y - food.y)
+  },
+  nearbyFoods: function() {
+    return food.filter(function(f) {
+      return this.distanceTo(f) >= 4;
+    }).sort(function(x,y) {
+      return this.distanceTo(x) > this.distanceTo(y);
+    })
+  },
+  moveToward: function(food) {
+    return null; // todo
+  }
 }
 
 var Food = function(x, y) {
@@ -231,7 +244,6 @@ function moveGrazer(grazer) {
 		grazer.moveRandom();
 	}
 }
-
 
 
 
