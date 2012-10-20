@@ -74,7 +74,6 @@ var context = c.getContext("2d");
 
 function draw() {
 
-	pacman.draw();
 	context.fillStyle = "black";
 	context.fillRect(0, 0, 320, 240);
 
@@ -84,6 +83,7 @@ function draw() {
 		}		
 	}
 
+	pacman.draw();
 }
 
 function logic() {
@@ -102,22 +102,45 @@ var Pacman = function(){
 				if( !wallAt(x,y) ){
 					this.x = x;
 					this.y = y;
+					return;
 				}
 			}
 		}
-		console.log("init pacman x=", this.x, " y=", this.y)
+		//console.log("init pacman x=", this.x, " y=", this.y)
 	}
 	this.init();
 	
 	this.setDirection = function(dx, dy){
 		this.dx=dx;
 		this.dy=dy;
-		console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
+		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
 	}
 	
 	this.draw = function(){
+		var ts = tilesize;
 		context.fillStyle="#FFFF00";
-		context.fillRect(this.x*tilesize,this.y*tilesize,tilesize,tilesize);
+        context.beginPath();
+        var arcStart = 0;
+        var arcEnd = Math.PI * (new Date().getTime()%100/1000);
+        if(this.dx==-1){
+        	arcStart=Math.PI;
+        }else if(this.dx==1){
+        	arcStart=0;
+        }else if(this.dy==-1){
+        	arcStart=Math.PI*3/2;
+        }else if(this.dy==1){
+        	arcStart=Math.PI/2;
+        }
+        context.arc(this.x*ts+ts/2,this.y*ts+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+        //context.fillStyle = "#FFFF00";
+        //context.fill();
+        context.lineWidth = ts/2;
+        context.strokeStyle = "#000000";
+        context.stroke();
+        context.lineWidth = ts/3;
+        context.strokeStyle = "#FFFF00";
+        context.stroke();
+
 	}
 	this.move = function(){
 		if( !wallAt(this.x+this.dx, this.y+this.dy) ){
@@ -127,7 +150,7 @@ var Pacman = function(){
 	}
 };
 
-var pacman = new Pacman();
+var pacman;
 
 
 function loop(){
@@ -135,9 +158,8 @@ function loop(){
 		draw();
 		logic();
 		loop();
-	},50);
+	},0);
 }
-loop();
 
 $(document).keydown(function(e){
     if (e.keyCode == 37) { 
@@ -181,10 +203,12 @@ function init( ) {
 	map.forEach(function (row) {
 		console.log(row);
 	});
+	
+	pacman = new Pacman();
+	loop();
 }
 
 init();
-draw();
 </script>
 
 </html>
