@@ -103,6 +103,15 @@ function draw() {
 		}		
 	}
 
+	pacman.draw();
+	pills.forEach(function (pill) {
+		context.fillStyle = "rgba(0,100,255,0.7)"
+		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
+	});
+}
+
+function logic() {
+
 	for (var i = 0; i < objects.length; i++) {
 		var o = objects[i];
 		o.draw();
@@ -119,103 +128,55 @@ function logic() {
 	}
 }
 
-var Pacman = function(){
-	this.x=0;
-	this.y=0;
-	this.dx=1;
-	this.dy=0;
-	this.ax = 0;
-	this.ay = 0;
-	this.isMoving=0;
 
-	this.speed = 250;
+var Base = function() {
+
+};
+
+Base.prototype = {
 	
-	this.init = function(){
-		for(var x=0; x<21; x++){
-			for(var y=0; y<17; y++){
-				if( !wallAt(x,y) ){
-					this.x = x;
-					this.y = y;
-					this.a1x=this.x*tilesize;
-					this.a1y=this.y*tilesize;
-					console.log("init pacman x=", this.x, " y=", this.y);
-					return;
-				}
-			}
-		}
-		
-	}
-	this.init();
-	
-	this.setDirection = function(dx, dy){
+	setValues: function(x, y, color, speed1, speed2, dx, dy) {
+		this.x = x; 
+		this.y = y; 
+		this.color = color;
+		this.speed1 = speed1;
+		this.speed2 = speed2;
+
+		this.speed = this.speed1;
+
+		this.dx = dx;
+		this.dy = dy;
+		this.ax = 0;
+		this.ay = 0;
+		this.isMoving=0;
+	},
+
+	setDirection: function(dx, dy){
 		if (!wallAt(this.x + dx + this.ax, this.y + dy + this.ay)) {
 			this.dx=dx;
 			this.dy=dy;
 		}
-		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
-	}
+	}, 
 
-	this.animValue = function() {
+	animValue: function() {
 		var ts = new Date().getTime();
 		var m = Math.min(this.speed, ts - this.isMoving);
 		var v = m / this.speed; 
 
 		return v;
-	}
-	
-	this.draw = function(){
-		var ts = tilesize;
-		context.fillStyle="#FFFF00";
-        context.beginPath();
-        var arcStart = 0;
-        var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+	}, 
 
+	move: function() {
 
-        if(this.ax==-1){
-        	arcStart=Math.PI;
-        }else if(this.ax==1){
-        	arcStart=0;
-        }else if(this.ay==-1){
-        	arcStart=Math.PI*3/2;
-        }else if(this.ay==1){
-        	arcStart=Math.PI/2;
-        }
+	}, 
 
-        var anim = this.isMoving > 0 ? this.animValue() : 0;
-		var x = this.x * ts + (ts * anim) * this.ax; 
-		var y = this.y * ts + (ts * anim) * this.ay;
-
-        context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
-        //context.fillStyle = "#FFFF00";
-        //context.fill();
-        context.lineWidth = ts/2;
-        context.strokeStyle = "#000000";
-        context.stroke();
-        context.lineWidth = ts;
-        context.strokeStyle = "#FFFF00";
-        context.stroke();
+	draw: function( ) {
 
 	}
-	this.move = function(){
-	
-		if (new Date().getTime() - this.isMoving > this.speed) {
-			this.isMoving = 0;
-			this.x += this.ax;
-			this.y += this.ay;
-			this.ax = 0;
-			this.ay = 0;
-		}
+}
 
-		if (this.isMoving == 0) {
-			if (!wallAt(this.x + this.dx, this.y + this.dy)) {
-				this.ax = this.dx;
-				this.ay = this.dy;
-				this.isMoving = new Date().getTime();
-			}
-		}  
-
-		return;
-	}
+var Pacman = function() {
+	this.setValues.apply(this, arguments);
 };
 function isObjectAt(x, y){
 	for (var i = 0; i < objects.length; i++) {
@@ -226,18 +187,50 @@ function isObjectAt(x, y){
 	return false;
 }
 
-var Ghost = function(){
-	this.x=0;
-	this.y=0;
-	this.dx=0;
-	this.dy=0;
-	this.ax = 0;
-	this.ay = 0;
-	this.isMoving=0;
-
-	this.speed = 250;
+Pacman.prototype = new Base();
 	
-	this.init = function(){
+Pacman.prototype.draw = function(){
+	var ts = tilesize;
+	context.fillStyle="#FFFF00";
+    context.beginPath();
+    var arcStart = 0;
+    var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+
+
+    if(this.ax==-1){
+    	arcStart=Math.PI;
+    }else if(this.ax==1){
+    	arcStart=0;
+    }else if(this.ay==-1){
+    	arcStart=Math.PI*3/2;
+    }else if(this.ay==1){
+    	arcStart=Math.PI/2;
+    }
+
+    var anim = this.isMoving > 0 ? this.animValue() : 0;
+	var x = this.x * ts + (ts * anim) * this.ax; 
+	var y = this.y * ts + (ts * anim) * this.ay;
+
+    context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+    //context.fillStyle = "#FFFF00";
+    //context.fill();
+    context.lineWidth = ts/2;
+    context.strokeStyle = "#000000";
+    context.stroke();
+    context.lineWidth = ts;
+    context.strokeStyle = "#FFFF00";
+    context.stroke();
+
+};
+
+
+var Ghost = function(){
+	this.setValues.apply(this, arguments);
+}
+
+Ghost.prototype = new Base();
+	
+	/*this.init = function(){
 		for(var x=20; x>=0; x--){
 			for(var y=16; y>=0; y--){
 				if( !wallAt(x,y) ){
@@ -256,80 +249,65 @@ var Ghost = function(){
 	}
 	this.init();
 	
-	this.setDirection = function(dx, dy){
-		if (!wallAt(this.x + dx + this.ax, this.y + dy + this.ay)) {
-			this.dx=dx;
-			this.dy=dy;
-		}
-		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
-	}
+	*/
+Ghost.prototype.draw = function(){
+	var ts = tilesize;
+	// context.fillStyle="#FFFF00";
+ //    context.beginPath();
+ //    var arcStart = 0;
+ //    var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+ //    if(this.ax==-1){
+ //    	arcStart=Math.PI;
+ //    }else if(this.ax==1){
+ //    	arcStart=0;
+ //    }else if(this.ay==-1){
+ //    	arcStart=Math.PI*3/2;
+ //    }else if(this.ay==1){
+ //    	arcStart=Math.PI/2;
+ //    }
 
-	this.animValue = function() {
-		var ts = new Date().getTime();
-		var m = Math.min(this.speed, ts - this.isMoving);
-		var v = m / this.speed; 
+    var anim = this.isMoving > 0 ? this.animValue() : 0;
+	var x = this.x * ts + (ts * anim) * this.ax; 
+	var y = this.y * ts + (ts * anim) * this.ay;
 
-		return v;
-	}
-	
-	this.draw = function(){
-		var ts = tilesize;
-		context.fillStyle="#FF00FF";
-        context.beginPath();
-        var arcStart = 0;
-        var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+	context.fillStyle = this.color; 
+	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
 
+    // context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+    // //context.fillStyle = "#FFFF00";
+    // //context.fill();
+    // context.lineWidth = ts/2;
+    // context.strokeStyle = "#000000";
+    // context.stroke();
+    // context.lineWidth = ts;
+    // context.strokeStyle = "#FFFF00";
+    // context.stroke();
 
-        if(this.ax==-1){
-        	arcStart=Math.PI;
-        }else if(this.ax==1){
-        	arcStart=0;
-        }else if(this.ay==-1){
-        	arcStart=Math.PI*3/2;
-        }else if(this.ay==1){
-        	arcStart=Math.PI/2;
-        }
-
-        var anim = this.isMoving > 0 ? this.animValue() : 0;
-		var x = this.x * ts + (ts * anim) * this.ax; 
-		var y = this.y * ts + (ts * anim) * this.ay;
-
-        context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
-        //context.fillStyle = "#FFFF00";
-        //context.fill();
-        context.lineWidth = ts/2;
-        context.strokeStyle = "#000000";
-        context.stroke();
-        context.lineWidth = ts;
-        context.strokeStyle = "#FF00FF";
-        context.stroke();
-
-	}
-	this.move = function(){
-	
-		if (new Date().getTime() - this.isMoving > this.speed) {
-			this.isMoving = 0;
-			this.x += this.ax;
-			this.y += this.ay;
-			this.ax = 0;
-			this.ay = 0;
-		}
-
-		if (this.isMoving == 0) {
-			if (!wallAt(this.x + this.dx, this.y + this.dy)) {
-				this.ax = this.dx;
-				this.ay = this.dy;
-				this.isMoving = new Date().getTime();
-			}
-		}  
-
-		return;
-	}
 };
+
+Ghost.prototype.move = function(){
+	
+	if (new Date().getTime() - this.isMoving > this.speed) {
+		this.isMoving = 0;
+		this.x += this.ax;
+		this.y += this.ay;
+		this.ax = 0;
+		this.ay = 0;
+	}
+
+	if (this.isMoving == 0) {
+		if (!wallAt(this.x + this.dx, this.y + this.dy)) {
+			this.ax = this.dx;
+			this.ay = this.dy;
+			this.isMoving = new Date().getTime();
+		}
+	}  
+};
+
 
 var pacman;
 var gtimer = 0;
-
+var pills = [];
 
 function loop(){
 	setTimeout(function(){
@@ -442,6 +420,13 @@ function drawWalls(context, x, y) {
 	}
 }
 
+function placePills() {
+	return [
+		{x: 10, y: 1},
+		{x: 1, y: 3}
+	];
+}
+
 function init(seed) {
 	console.log("init:", seed);
 
@@ -450,14 +435,18 @@ function init(seed) {
 		map.push(mapInit[y].split(""));
 	}
 
+	pills = placePills();
+
 	openUpMap(map);
-	pacman = new Pacman();
+
+	pacman = new Pacman(1, 1, "#FFFF00", 250, 300, 0, 0);
+
 	objects = [];
 	objects.push(pacman);
-	objects.push(new Ghost());
-	objects.push(new Ghost());
-	objects.push(new Ghost());
-	objects.push(new Ghost());
+	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, -1, 0));
+	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, -1, 0));
+	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, -1, 0));
+	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, -1, 0));
 	loop();
 
 	// map.forEach(function (row) {
@@ -471,6 +460,8 @@ document.querySelector("a").addEventListener("click", function() {
 	seed++;
 	init(seed);
 })
+
+
 </script>
 
 </html>
