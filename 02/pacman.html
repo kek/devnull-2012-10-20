@@ -211,7 +211,7 @@ Pacman.prototype.draw = function(){
 	context.fillStyle = "#FFFF00";
     context.beginPath();
     var arcStart = 0;
-    var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+    var arcEnd = Math.PI * (new Date().getTime()%this.speed/(this.speed * 10));
 
     if(this.ax==-1){
     	arcStart=Math.PI;
