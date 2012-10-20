@@ -20,6 +20,27 @@
 		</script>
 	</head>
 	<body>
+
+<!--
+
+Create a server which contain a dungeon. In the beginning the dungeon is only
+one room that has 2-4 doors that lead out to other rooms. The room have four
+walls and there can only be one door on each wall (N,W,E,S). The room also have
+a random length and width (between 3 and 11 units).
+
+When a player chooses a door, the server generates a new room with the above
+constraints that the door opens up to. However, rooms are not allowed to
+overlap. Being able to have doors open up to older rooms is a nice feature, but
+not necessary.
+
+Create a client to the server that display the room data graphically, and let a
+user click on a door to enter the room behind that door, and so on. When the
+user choose a door, the client send this information to the server, which
+creates a new room behind the door (with new doors) and send the new room
+information back to the client.
+
+-->
+
 	<div id="test"></div>
 	<canvas id="myCanvas" width="420" height="340"></canvas>
 
