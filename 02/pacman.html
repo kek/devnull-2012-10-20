@@ -108,9 +108,19 @@ function draw() {
 	}
 	
 	pills.forEach(function (pill) {
-		context.fillStyle = "rgba(0,100,255,0.7)"
-		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
+		//context.fillStyle = "rgba(0,100,255,0.7)";
+		//context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2);
+		context.beginPath();
+		context.arc(pill.x * tilesize + 1 + tilesize * 0.5, pill.y * tilesize + 1 + tilesize * 0.5, tilesize/2, 0, Math.PI*2, false);
+	    context.fillStyle = "rgba(255,100,255," + (tsLerp(500)+500)*0.001+ ")";
+	    context.fill();
+		context.closePath();
 	});
+}
+
+function tsLerp(ms){
+	var t = new Date().getTime()%(ms*2);
+	return t>ms ? ms*2-t : ms;
 }
 
 function logic() {
@@ -124,6 +134,10 @@ function logic() {
 	if(pillsHere.length > 0) {
 		pills = pills.filter(function (pill) { return pill != pillsHere[0] });
 		pacman.eatPill();
+	}
+	
+	if( !pacman.isSuperpowered() && pills.length<2 ){
+		pills.push(placePill());
 	}
 
 	objects.forEach(function (object) {
@@ -221,6 +235,7 @@ function isObjectAt(x, y){
 	return false;
 }
 
+
 Pacman.prototype = new Base();
 	
 Pacman.prototype.draw = function(){
@@ -228,7 +243,9 @@ Pacman.prototype.draw = function(){
 	context.fillStyle = "#FFFF00";
     context.beginPath();
     var arcStart = 0;
-    var arcEnd = Math.PI * (new Date().getTime()%this.speed/(this.speed * 10));
+    var a = new Date().getTime() % this.speed;
+    a = a>this.speed/2 ? this.speed-a : a;
+    var arcEnd = Math.PI * (a/(this.speed * 5));
 
     if(this.ax==-1){
     	arcStart=Math.PI;
@@ -243,18 +260,28 @@ Pacman.prototype.draw = function(){
     var anim = this.isMoving > 0 ? this.animValue() : 0;
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
-	var factor = this.superpowered > (new Date().getTime()) ? 1 : 2;
+	var factor = this.isSuperpowered() ? 2-randomInt(8)*0.1 : 2;
 
     context.arc(x+ts/2, y+ts/2, ts/(2 * factor), arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
-    context.lineWidth = ts / factor;
-    context.strokeStyle = this.color;
-    context.stroke();
-
+    if( this.isSuperpowered() ){
+    	context.lineWidth = (ts / factor)*1.2;
+	    context.strokeStyle = "#000000";
+	    context.stroke();
+	    context.lineWidth = ts / factor;
+	    context.strokeStyle = "#FF0000";
+	    context.stroke();
+    }else{
+    	context.lineWidth = ts / factor;
+	    context.strokeStyle = this.color;
+	    context.stroke();
+    }
 };
 
+Pacman.prototype.isSuperpowered = function(){
+	return this.superpowered > new Date().getTime();
+}
 Pacman.prototype.eatPill = function(){
 	this.superpowered = new Date().getTime() + 5000;
-	console.log("*** Pacman.prototype.eatPill() is not implemented");
 };
 
 var Ghost = function(){
@@ -263,35 +290,19 @@ var Ghost = function(){
 }
 
 Ghost.prototype = new Base();
-	
-	/*this.init = function(){
-		for(var x=20; x>=0; x--){
-			for(var y=16; y>=0; y--){
-				if( !wallAt(x,y) ){
-					if( !isObjectAt(x,y) ){
-						this.x = x;
-						this.y = y;
-						this.a1x=this.x*tilesize;
-						this.a1y=this.y*tilesize;
-						console.log("init ghost x=", this.x, " y=", this.y);
-						return;
-					}
-				}
-			}
-		}
-		
-	}
-	this.init();
-	
-	*/
+
 Ghost.prototype.draw = function(){
 	var ts = tilesize;
     var anim = this.isMoving > 0 ? this.animValue() : 0;
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
 
+	context.beginPath();
 	context.fillStyle = this.color; 
-	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
+	context.arc(x+ts/2, y+ts/2, ts/2, 0, Math.PI*2, false);
+    context.fillStyle = pacman.isSuperpowered() ? "rgba(0,100,255," + ((randomInt(50)+50)*0.003)+ ")" : "rgba(0,255,100," + ((randomInt(50)+50)*0.004)+ ")";
+    context.fill();
+	context.closePath();
 };
 var rnd;
 function randomInt(max) {
@@ -301,7 +312,7 @@ function randomInt(max) {
 
 Ghost.prototype.collideWith = function(other){
 	console.log("Ghost collided with", other);
-	if (other.superpowered > new Date().getTime()) {
+	if (other.isSuperpowered()) {
 		this.die();
 	} else {
 		other.die();
@@ -471,13 +482,29 @@ function drawWalls(context, x, y) {
 	}
 }
 
+function placePill() {
+	while(true){
+		var x1 = randomInt(21);
+		var y1 = randomInt(17);
+		if( !wallAt(x1, y1) ){
+			return {x: x1, y: y1};
+		}
+	}
+}
+
 function placePills() {
-	
+	var pills = [];
+	pills.push(placePill());
+	pills.push(placePill());
+	pills.push(placePill());
+	pills.push(placePill());
+	return pills;
+/*	
 	return [
 		{x: 10, y: 1},
 		{x: 1, y: 3},
 		{x: map[0].length-2, y: map.length-2}
-	];
+	];*/
 }
 
 function init(seed) {
@@ -493,7 +520,7 @@ function init(seed) {
 
 	openUpMap(map);
 
-	pacman = new Pacman(1, 1, "#FFFF00", 250, 300, 0, 0);
+	pacman = new Pacman(1, 1, "#FFFF66", 250, 300, 0, 0);
 
 	objects = [];
 	objects.push(pacman);
