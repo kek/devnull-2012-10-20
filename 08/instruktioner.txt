@@ -1,0 +1,16 @@
+Create a small graphical simulation on a 100x100 pixel canvas that works like this;
+
+1. Each tick, create ten ‘food’  pixels randomly on the canvas.
+2. Place ten grazers on the canvas. A grazer lives for 20 ticks.
+3. Grazers looks for food in a 5x5 radius each tick, then moves one step toward nearest food, otherwise randomly.
+4. If Grazer find food adjacent to it, it eats it (remove food)
+5. If Grazer eat 5 food, create new Grazer randomly adjacent to the first. 
+
+Add to Grazing simulation the following;
+
+1. Add five Hunters to the simulation. A Hunter lives for 10 ticks but can move two pixels/tick.
+2. A hunter looks for Grazers in a 5x5 radius each tick, then move towards the nearest one, otherwise randomly.
+3. If a Hunter is adjacent to a Grazer, kill the Grazer (remove from canvas)
+4. If a Hunter eat 5 Grazers, create a new Hunter randomly adjacent to the first.
+
+Tweak parameters to get a nicer simulation. Smile. Call the judges. 

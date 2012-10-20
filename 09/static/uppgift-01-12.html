@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Devnull</title>
+	
+<!--     <link rel="stylesheet" href="js/dijit/themes/dijit.css">
+    <link rel="stylesheet" href="js/dijit/themes/tundra/tundra.css">
+ -->
+<!-- 	<link href='styles/styles.css' rel='stylesheet' type='text/css'>
+ -->
+	<script src="js/dojo/dojo.js" data-dojo-config='isDebug: true, async: true, parseOnLoad: false, paths: { "devnull": "../devnull" }'></script>
+
+</head>
+<body class="tundra">
+	<div id="page">
+		<h1></h1>
+		
+		<div id="examples">
+
+
+
+		</div>
+
+		<div id="tb" data-dojo-type="dijit.form.TextBox" value="abc"></div>
+		<div id="tbcounter" data-dojo-type="dijit.form.TextBox" value="0"></div>
+
+		<br>
+
+
+
+		<div id="result">
+
+
+
+		</div>
+	</div>
+
+
+<script>
+
+    // load requirements for declarative widgets in page content
+    require([
+    	"dojo", 
+    	"dojo/_base/connect", 
+    	"dojo/request/xhr",
+    	"dijit/registry", 
+		"dojo/domReady!", 
+		"dojo/parser", 
+		"dijit/form/TextBox"
+    ], 
+
+	function(
+		dojo, 
+		connect,
+		xhr,
+		registry,
+		domReady, 
+		parser, 
+		TextBox
+	) {
+
+		var counter = 0;
+		parser.parse();
+		var tb = registry.byId("tb");
+		var tbcounter = registry.byId("tbcounter");
+
+		tb.focus();
+
+	//	tb.set("intermediateChanges", true);
+
+		connect.connect(tb, "onChange", function(value) {
+			validate(value);
+		})
+
+		get();
+
+		function get() {
+//			xhr.get("http://localhost:9393/newspaper/words", { query: { }, handleAs: "json" }, function(result) {
+			xhr.get("http://localhost:9393/newspaper/words", { query: { }, handleAs: "json" }).then(function(result) {
+
+				document.getElementById("examples").innerHTML = result.words.join("<br>");
+
+			}, function(err) {
+
+				console.log("fasdassds", err);
+
+			});
+
+
+		}
+
+		function validate(value) {
+
+			xhr.post(
+				"/newspaper/guess", {
+				      query: {
+				        guess: value
+				      },
+				      handleAs: "json"
+			      }
+			).then(function(result) {
+
+				if (result.yes) {
+
+					// TODO: get()
+					get();
+
+				} else {
+					counter++;
+					tbcounter.set("value", counter)
+				}
+
+			}, 
+			function(err) {
+
+				console.log("post error         ", err);
+
+			});
+
+		}
+	});
+
+</script>
+
+</body>
+</html>
