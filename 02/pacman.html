@@ -24,16 +24,37 @@
 var tilesize = 20;
 var map = [
 "################",
+"#              #",
 "# ############ #",
+"#              #",
+"#              #",
 "# ############ #",
-"# ############ #",
-"# ############ #",
+"#              #",
 "# ############ #",
 "#              #",
 "# ############ #",
 "#              #",
-"################",
+"################"
 ];
+
+map = openUpMap(map);
+
+map.forEach(function (row) {
+	console.log(row);
+});
+
+function openUpMap(map) {
+	var rnd = new MersenneTwister(1);
+
+	for(i = 0; i < map.length; i++) {
+		if(map[i] == "# ############ #") {
+			var hole = Math.floor(rnd.random() * (map[i].length - 2));
+			map[i] = map[i].substr(2, hole) + " " + map[i].substr(hole + 1, map[i].length - hole);
+			console.log(hole);
+		}
+	}
+	return map;
+}
 
 function wallAt(x, y) {
 	return map[y][x] === "#";
