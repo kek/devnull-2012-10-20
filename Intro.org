@@ -1,0 +1,11 @@
+* Sinatra
+** TODO Websockets i Sinatra
+   [[https://github.com/simulacre/sinatra-websocket][sinatra-websocket]]
+   [[http://www.128bitstudios.com/2012/04/16/sinatra-with-websockets/][Sinatra with Websockets]]
+** TODO Rendera JSON med Sinatra
+* Browsern
+** TODO Websockets-mall i browsern
+** TODO Rita nåt med Dojo
+   [[http://dojotoolkit.org/documentation/tutorials/1.8/hello_dojo/][Dojo tutorial]]
+** TODO Ajax (Dojo?)
+   
