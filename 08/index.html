@@ -330,12 +330,12 @@ function updateHunters() {
 				grazers.splice(grazers.indexOf(g), 1);
 				console.log("Eat grazer!", hunter.eaten, hunters.length, gticks);
 
-				if (grazer.eaten >= 5) {
-					spawnRandomGrazer(grazer);
+				if (hunter.eaten >= 5) {
+					spawnRandomHunter(grazer);
 				}
 			}
 
-			moveGrazer(grazer);
+			moveHunter(hunter);
 		}
 	}
 
