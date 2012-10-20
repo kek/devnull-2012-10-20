@@ -175,6 +175,16 @@ Grazer.prototype = {
   moveRandom: function(){
 	  this.x += randomInt(2)==0 ? 1 : -1;
 	  this.y += randomInt(2)==0 ? 1 : -1;
+	  if(this.x<0)this.x=0;
+	  if(this.x>100)this.x=100;
+	  if(this.y<0)this.y=0;
+	  if(this.y>100)this.y=100;
+  },
+  canEatFood: function(f){
+	  return false;
+  },
+  eatFood: function(f){
+	  //TODO remove food from food array
   }
 }
 
