@@ -26,7 +26,8 @@
 	<br> <a href="#">Seed</a>
 	<script type="text/javascript" src="random.js"></script>
 <script>
-	
+
+var seed = 0;
 var tilesize = 20;
 var mapInit = [
 "#####################",
@@ -50,22 +51,19 @@ var mapInit = [
 
 var map = [];
 
-function openUpMap(map) {
+function openUpMap(map, seed) {
 	var NUMHOLES = 2;
-	var rnd = new MersenneTwister(1);
+	var rnd = new MersenneTwister(seed);
 
 	for(var i = 1; i < map.length-1; i++) {
+
 		while(map[i].filter(function (cell) {
-			console.log(cell);
 			return cell == " ";
 		}).length < NUMHOLES + 2) {
-			var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
+			var hole = Math.floor(rnd.random() * (map[i].length - 4));
 			if(map[i][hole-1] == "#" && map[i][hole+1] == "#") {
 				map[i][hole] = " ";
-				console.log("adding hole");
-			} else {
-				console.log("not adding hole");
-			}
+			} 
 		}
 	}
 	return map;
@@ -146,8 +144,6 @@ function drawWalls(context, x, y) {
 
 		} else if (right) {
 
-			console.log("right");
-
 			var w2 = tilesize / 2 + inset;
 			rx = x * tilesize + tilesize / 2;
 			ry = y * tilesize + inset;
@@ -189,20 +185,29 @@ function drawWalls(context, x, y) {
 	}
 }
 
-function init( ) {
+function init(seed) {
+	console.log("init:", seed);
+
+	map = [];
 	for (var y = 0; y < mapInit.length; y++) {
 		map.push(mapInit[y].split(""));
 	}
 
-	map = openUpMap(map);
+	openUpMap(map);
 
-	map.forEach(function (row) {
-		console.log(row.join(""));
-	});
+	// map.forEach(function (row) {
+	// 	console.log(row.join(""));
+	// });
+
+	draw();
 }
 
-init();
-draw();
+init(seed);
+
+document.querySelector("a").addEventListener("click", function() {
+	seed++;
+	init(seed);
+})
 </script>
 
 </html>
