@@ -31,7 +31,7 @@ var tilesize = 20;
 var mapInit = [
 "#####################",
 "#                   #",
-"# ################# #",
+"# # ############### #",
 "#                   #",
 "#####################",
 "#                   #",
@@ -120,6 +120,15 @@ function drawWalls(context, x, y) {
 		var ry; 
 		var rw;
 		var rh;
+
+		if (!left && !right && !top && !bottom) {
+
+			rx = x * tilesize + inset;
+			ry = y * tilesize + inset;
+			rw = tilesize - inset - inset;
+			rh = tilesize - inset - inset;
+
+		}
 
 		if (left && right) {
 
