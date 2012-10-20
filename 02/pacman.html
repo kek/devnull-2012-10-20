@@ -200,11 +200,10 @@ Pacman.prototype = new Base();
 	
 Pacman.prototype.draw = function(){
 	var ts = tilesize;
-	context.fillStyle="#FFFF00";
+	context.fillStyle = "#FFFF00";
     context.beginPath();
     var arcStart = 0;
     var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
-
 
     if(this.ax==-1){
     	arcStart=Math.PI;
@@ -220,19 +219,20 @@ Pacman.prototype.draw = function(){
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
 
-    context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+    context.arc(x+ts/2, y+ts/2, ts/4, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
     //context.fillStyle = "#FFFF00";
     //context.fill();
     context.lineWidth = ts/2;
     context.strokeStyle = "#000000";
     context.stroke();
-    context.lineWidth = ts;
+    context.lineWidth = ts/2;
     context.strokeStyle = "#FFFF00";
     context.stroke();
 
 };
 
 Pacman.prototype.eatPill = function(){
+	this.superpowered = 1;
 	console.log("*** Pacman.prototype.eatPill() is not implemented");
 };
 
