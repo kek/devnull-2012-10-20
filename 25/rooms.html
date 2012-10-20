@@ -44,6 +44,10 @@ function Room(x, y, w, h) {
 	this.doors = [];
 }
 
+Room.prototype.openDoor = function(index){
+	console.log('TODO open a new door');
+}
+
 function Door(x, y, w, h, rooms) {
 	this.x = x;
 	this.y = y;
@@ -96,6 +100,34 @@ function draw() {
 
 init(seed);
 
+function posOnDoor(x,y,d){
+	return x>=d.x && x<=d.x+d.w && y>=d.y && y<=d.y+d.h;
+}
+
+function openDoor(x,y){
+	x = parseInt(x/scale);
+	y = parseInt(y/scale);
+	for (var i = 0; i < rooms.length; i++) {
+		var r = rooms[i];
+		var d = r.doors;
+		for (var j = 0; j < d.length; j++) {
+			if(posOnDoor(x,y,d[j])){
+				r.openDoor(j);
+				return;
+			}
+		}
+	}
+	console.log('No door found x=', x, ", y=", y);
+}
+
+
+$("#myCanvas").click(function(e){
+	
+    //var x = Math.floor((e.pageX-$("#canvas").offset().left) / 20);
+    //var y = Math.floor((e.pageY-$("#canvas").offset().top) / 20);
+    openDoor(e.pageX,e.pageY);
+
+ });
 
 
 </script>
