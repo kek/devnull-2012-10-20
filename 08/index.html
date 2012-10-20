@@ -216,13 +216,15 @@ function isFoodCloseBy(grazer){
 			return food[i];
 		}
 	}
-	return false;
+	return null;
 }
 
 function moveGrazer(grazer) {
-	var foodCloseBy = isFoodCloseBy(grazer);
-	if( foodCloseBy!=false ){
-		
+	var nearbyFoods = grazer.nearbyFoods();
+	if( nearbyFoods.length>0 ){
+		grazer.moveTowards(nearbyFoods[0]);
+	}else{
+		grazer.moveRandom();
 	}
 }
 
@@ -268,6 +270,7 @@ function moveGrazer(grazer) {
 			draw();
 			logic();
 			loop();
+			console.log("tick")
 		},1000);
 	}
 	loop();
