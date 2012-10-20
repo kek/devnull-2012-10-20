@@ -15,12 +15,36 @@
 	</head>
 	<body>
 	<div id="test"></div>
-	<canvas id="myCanvas" width="320" height="240"></canvas><a href="#">Seed
-	<span>1</span></a>
+	<canvas id="myCanvas" width="320" height="240"></canvas>
+
+	<br> <a href="#">Seed</a>
 	<script type="text/javascript" src="random.js"></script>
-	<script>
+<script>
+	
+var tilesize = 20;
+var map = [
+"################",
+"# ############ #",
+"# ############ #",
+"# ############ #",
+"# ############ #",
+"# ############ #",
+"#              #",
+"# ############ #",
+"#              #",
+"################",
+];
 
+function wallAt(x, y) {
+	return map[y][x] === "#";
+}
 
+var c = document.querySelector("canvas");
+var context = c.getContext("2d");
+
+function draw() {
+
+}
 </script>
 
 </html>
