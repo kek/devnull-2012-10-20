@@ -173,8 +173,19 @@ var grazers = [];
 var rnd;
 
 
-function spawnFood() {
+function randomInt(max) {
+	return Math.floor(rnd.random() * 100);
+}
 
+
+function spawnFood() {
+	for (var i = 0; i < 10; i++) {
+
+		var x = randomInt(100);
+		var y = randomInt(100);
+
+		food.push(new Food(x, y));
+	}
 }
 
 function spawnGrazers() {
