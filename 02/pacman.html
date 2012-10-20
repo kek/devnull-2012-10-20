@@ -280,6 +280,48 @@ Ghost.prototype.draw = function(){
 	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
 };
 
+function randomInt(max) {
+	return Math.floor(rnd.random() * max);
+}
+
+Ghost.prototype.move = function(){
+	//TODO call basecalss
+	if (new Date().getTime() - this.isMoving > this.speed) {
+		this.isMoving = 0;
+		this.x += this.ax;
+		this.y += this.ay;
+		this.ax = 0;
+		this.ay = 0;
+		
+		for(var nx=0,ny=0;nx==0&&ny==0;){
+			var r = randomInt(4);
+			if(r==0){
+				nx=1;
+			}else if(r==1){
+				nx=-1;
+			}else if(r==2){
+				ny=1;
+			}else{
+				ny=-1;
+			}
+			if( wallAt(nx,ny) ){
+				nx=ny=0;	
+			}else{
+				this.setDirection(nx,ny);
+				console.log("r=", r, " nx=",nx," ny=",ny)
+				break;
+			}
+		}
+	}
+
+	if (this.isMoving == 0) {
+		if (!wallAt(this.x + this.dx, this.y + this.dy)) {
+			this.ax = this.dx;
+			this.ay = this.dy;
+			this.isMoving = new Date().getTime();
+		}
+	}  
+}
 
 
 var pacman;
@@ -405,6 +447,7 @@ function placePills() {
 }
 
 function init(seed) {
+	rnd = new MersenneTwister(seed);
 	console.log("init:", seed);
 
 	map = [];
@@ -420,10 +463,10 @@ function init(seed) {
 
 	objects = [];
 	objects.push(pacman);
-	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, -1, 0));
-	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, -1, 0));
-	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, -1, 0));
-	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, -1, 0));
+	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, 0, 0));
+	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, 0, 0));
+	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, 0, 0));
+	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, 0, 0));
 	loop();
 
 	// map.forEach(function (row) {
