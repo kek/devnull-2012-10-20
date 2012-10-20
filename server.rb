@@ -3,6 +3,8 @@ require 'json'
 require 'net/http'
 require 'nokogiri'
 
+set :public_folder, File.dirname(__FILE__) + '/static'
+
 get '/' do
   "Hello World"
 end
@@ -35,7 +37,7 @@ get '/newspaper/words' do
   wordfile.write(words)
   wordfile.close
 
-  scrambled.to_json
+  { "words" => scrambled }.to_json
 end
 
 post '/newspaper/guess' do
@@ -47,10 +49,10 @@ post '/newspaper/guess' do
 
   if words.member? guess
     status 200
-    "Right"
+    { "yes" => true }.to_json
   else
-    status 404
-    "Wrong"
+    status 200
+    { "yes" => false }.to_json
   end
   # "The guess is #{guess}. " # + (words.member? guess ? "Correct!" : "Incorrect!")
 end

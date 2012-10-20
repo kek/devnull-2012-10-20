@@ -75,8 +75,8 @@
 		get();
 
 		function get() {
-//			xhr.get("http://10.200.0.54:9393/newspaper/words", { query: { }, handleAs: "json" }, function(result) {
-			xhr.get("http://10.200.0.54:9393/newspaper/words", { query: { }, handleAs: "json" }).then(function(result) {
+//			xhr.get("http://localhost:9393/newspaper/words", { query: { }, handleAs: "json" }, function(result) {
+			xhr.get("http://localhost:9393/newspaper/words", { query: { }, handleAs: "json" }).then(function(result) {
 
 				document.getElementById("examples").innerHTML = result.words.join("<br>");
 
@@ -92,9 +92,9 @@
 		function validate(value) {
 
 			xhr.post(
-				"_default.json", {
+				"/newspaper/guess", {
 				      query: {
-				        value: value
+				        guess: value
 				      },
 				      handleAs: "json"
 			      }
@@ -113,7 +113,7 @@
 			}, 
 			function(err) {
 
-				console.log("fasdassds");
+				console.log("post error         ", err);
 
 			});
 
