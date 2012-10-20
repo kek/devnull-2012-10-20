@@ -292,6 +292,11 @@ Ghost.prototype.draw = function(){
 	context.fillStyle = this.color; 
 	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
 };
+var rnd;
+function randomInt(max) {
+	rnd.random();
+	return Math.floor(rnd.random() * 2312314123) % max;
+}
 
 Ghost.prototype.collideWith = function(other){
 	console.log("Ghost collided with", other);
@@ -300,6 +305,49 @@ Ghost.prototype.collideWith = function(other){
 	} else {
 		other.die();
 	}
+};
+
+Ghost.prototype.move = function(){
+	//TODO call basecalss
+	if (new Date().getTime() - this.isMoving > this.speed) {
+		this.isMoving = 0;
+		this.x += this.ax;
+		this.y += this.ay;
+		this.ax = 0;
+		this.ay = 0;
+		
+		var nx=0,ny=0,ra;
+		//while(wallAt(this.x + nx, this.y + ny) || (nx === 0 && ny === 0) || (nx === -this.dx && ny === this.dy) || (nx === this.dx && ny === -this.dy)){
+
+		for(nx=0,ny=0;nx==0&&ny==0;){
+			ra = Math.floor(Math.random()*100000)%4;
+			console.log(ra);
+			if(ra==0){
+				nx=1;
+			}else if(ra==1){
+				nx=-1;
+			}else if(ra==2){
+				ny=1;
+			}else if (ra==3){
+				ny=-1;
+			}
+			if( wallAt(this.x + nx, this.y + ny) ){
+				nx=ny=0;	
+			}else{
+				this.setDirection(nx,ny);
+				console.log("ra=", ra, " nx=",nx," ny=",ny)
+				break;
+			}
+		}
+	}
+
+	if (this.isMoving == 0) {
+		if (!wallAt(this.x + this.dx, this.y + this.dy)) {
+			this.ax = this.dx;
+			this.ay = this.dy;
+			this.isMoving = new Date().getTime();
+		}
+	}  
 }
 
 
@@ -422,11 +470,13 @@ function placePills() {
 	
 	return [
 		{x: 10, y: 1},
-		{x: 1, y: 3}
+		{x: 1, y: 3},
+		{x: map[0].length-2, y: map.length-2}
 	];
 }
 
 function init(seed) {
+	rnd = new MersenneTwister(seed);
 	console.log("init:", seed);
 
 	map = [];
@@ -442,10 +492,10 @@ function init(seed) {
 
 	objects = [];
 	objects.push(pacman);
-	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, -1, 0));
-	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, -1, 0));
-	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, -1, 0));
-	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, -1, 0));
+	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, 0, 0));
+	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, 0, 0));
+	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, 0, 0));
+	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, 0, 0));
 	loop();
 
 	// map.forEach(function (row) {
