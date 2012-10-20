@@ -181,6 +181,20 @@ Grazer.prototype = {
 
   moveTowardkey: function(food) {
     return null; // todo
+  },
+  moveRandom: function(){
+	  this.x += randomInt(2)==0 ? 1 : -1;
+	  this.y += randomInt(2)==0 ? 1 : -1;
+	  if(this.x<0)this.x=0;
+	  if(this.x>100)this.x=100;
+	  if(this.y<0)this.y=0;
+	  if(this.y>100)this.y=100;
+  },
+  canEatFood: function(f){
+	  return false;
+  },
+  eatFood: function(f){
+	  //TODO remove food from food array
   }
 }
 
@@ -230,20 +244,68 @@ function spawnFood() {
 }
 
 function spawnGrazers() {
+	for (var i = 0; i < 10; i++) {
 
+		var x = randomInt(100);
+		var y = randomInt(100);
+		var count = 500;
+
+		while (foodAt(x, y) && count > 0) {
+			x = randomInt(100);
+			y = randomInt(100);
+			count--;
+		}
+
+		createGrazer(x, y);
+	}
 }
 
 function createGrazer(x, y) {
-
+	grazers.push(new Grazer(x, y));
 }
+
 
 function moveGrazer(grazer) {
-
+	var nearbyFoods = grazer.nearbyFoods();
+	if( nearbyFoods.length>0 ){
+		grazer.moveTowards(nearbyFoods[0]);
+		if( grazer.canEatFood(nearbyFoods[0]) ){
+			grazer.eatFood(nearbyFoods[0]);
+		}
+	}else{
+		grazer.moveRandom();
+	}
 }
 
+function updateGrazers() {
+
+	for (var i = grazers.length - 1; i >= 0; i--) {
+
+		var grazer = grazers[i];
+
+		grazer.tick++;
+
+		if (!grazer.isAlive()) {
+			// remove item at i
+			grazers.splice(i, 1);
+		} else {
+
+			// TODO: at a food to eat?
+			// TODO: find next position
+			// TODO: move
+
+
+		}
+
+	}
+
+}
 
 
 	function init() {
+		ctx.fillStyle="rgb(0, 0, 0)";
+		ctx.fillRect(0,0,100,100);
+
 		rnd = new MersenneTwister(0);
 		spawnGrazers();
 		spawnFood();
@@ -258,23 +320,23 @@ function moveGrazer(grazer) {
 	init();
 
 	function draw(){
-		ctx.fillStyle="#AAFFAA";
+		ctx.fillStyle="rgba(0, 0, 0, 0.1)";
 		ctx.fillRect(0,0,100,100);
 		
-		ctx.fillStyle="#FFAAAA";
+		ctx.fillStyle="#00FF00";
 		for (var i=0; i<food.length; i++){
 			ctx.fillRect(food[i].x,food[i].y,1,1);
 		}
 
-		ctx.fillStyle="#AAAAFF";
+		ctx.fillStyle="#FFFFFF";
 		for (var i=0; i<grazers.length; i++){
 			ctx.fillRect(grazers[i].x,grazers[i].y,1,1);
 		}
 	}
 	
 	function logic(){
-		//spawnFood();
-
+//		spawnFood();
+		updateGrazers();
 	}
 
 	function loop(){
@@ -282,6 +344,7 @@ function moveGrazer(grazer) {
 			draw();
 			logic();
 			loop();
+			console.log("tick")
 		},1000);
 	}
 	loop();
