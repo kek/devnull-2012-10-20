@@ -48,11 +48,20 @@ var map = [];
 function openUpMap(map) {
 	var rnd = new MersenneTwister(1);
 
-	for(i = 0; i < map.length; i++) {
-		if(map[i] == "# ############ #") {
-			var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
-			;
-			console.log(hole);
+	for(var i = 0; i < map.length; i++) {
+		if(map[i].join("") == "# ############ #") {
+			while(map[i].filter(function (cell) {
+				console.log(cell);
+				cell == " ";
+			}).length < 5) {
+				var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
+				if(map[i][hole-1] == "#" && map[i][hole+1] == "#") {
+					map[i][hole] = " ";
+					console.log("adding hole");
+				} else {
+					console.log("not adding hole");
+				}
+			}
 		}
 	}
 	return map;
@@ -101,10 +110,11 @@ function init( ) {
 	for (var y = 0; y < mapInit.length; y++) {
 		map.push(mapInit[y].split(""));
 	}
-	openUpMap(mapInit);
+
+	map = openUpMap(map);
 
 	map.forEach(function (row) {
-		console.log(row);
+		console.log(row.join(""));
 	});
 }
 
