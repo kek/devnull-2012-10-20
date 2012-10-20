@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>Test</title>
+		<!--  script src="lib/jquery-1.7.1.min.js"></script -->
+		<script>
+		
+		
+		//$(document).ready(function(){
+			
+			//alert("fisk => "+rev("fisk"));
+			//alert("fisk2 => "+rev("fisk2"));
+		//});
+		
+		</script>
+	</head>
+	<body>
+	<div id="test"></div>
+	<canvas id="myCanvas" width="100" height="100"></canvas>
+	<script>
+	
+	var food = [];
+	var grazers = [];
+	
+	var c=document.getElementById("myCanvas");
+	var ctx=c.getContext("2d");
+	
+	draw();
+
+	function draw(){
+		ctx.fillStyle="#AAFFAA";
+		ctx.fillRect(0,0,100,100);
+		
+		ctx.fillStyle="#FFAAAA";
+		for (var i=0; i<food.length; i++){
+			ctx.fillRect(food[i].x,food[i].y,1,1);
+		}
+
+		ctx.fillStyle="#AAAAFF";
+		for (var i=0; i<grazers.length; i++){
+			ctx.fillRect(grazers[i].x,grazers[i].y,1,1);
+		}
+	}
+	
+	function logic(){
+	
+	}
+	function loop(){
+		setTimeout(function(){
+			draw();
+			logic();
+			loop();
+		},10);
+	}
+	loop();
+	</script>
+	
+	</body>
+</html>
