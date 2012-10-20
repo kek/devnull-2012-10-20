@@ -103,19 +103,19 @@ function draw() {
 		}		
 	}
 
-	pacman.draw();
+	for (var i = 0; i < objects.length; i++) {
+		var o = objects[i];
+		o.draw();
+	}
+	
 	pills.forEach(function (pill) {
 		context.fillStyle = "rgba(0,100,255,0.7)"
 		context.fillRect(pill.x * tilesize + 1, pill.y * tilesize + 1, tilesize - 2, tilesize - 2)
 	});
 }
 
-function logic() {
 
-	for (var i = 0; i < objects.length; i++) {
-		var o = objects[i];
-		o.draw();
-	}
+function logic() {
 
 	for (var i = 0; i < objects.length; i++) {
 		var o = objects[i];
@@ -195,6 +195,14 @@ Base.prototype = {
 var Pacman = function() {
 	this.setValues.apply(this, arguments);
 };
+function isObjectAt(x, y){
+	for (var i = 0; i < objects.length; i++) {
+		if( objects[i].x==x && objects[i].y==y ){
+			return true;
+		}
+	}
+	return false;
+}
 
 Pacman.prototype = new Base();
 	
@@ -242,9 +250,28 @@ var Ghost = function(){
 
 Ghost.prototype = new Base();
 	
+	/*this.init = function(){
+		for(var x=20; x>=0; x--){
+			for(var y=16; y>=0; y--){
+				if( !wallAt(x,y) ){
+					if( !isObjectAt(x,y) ){
+						this.x = x;
+						this.y = y;
+						this.a1x=this.x*tilesize;
+						this.a1y=this.y*tilesize;
+						console.log("init ghost x=", this.x, " y=", this.y);
+						return;
+					}
+				}
+			}
+		}
+		
+	}
+	this.init();
+	
+	*/
 Ghost.prototype.draw = function(){
 	var ts = tilesize;
-
     var anim = this.isMoving > 0 ? this.animValue() : 0;
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
@@ -391,13 +418,12 @@ function init(seed) {
 
 	pacman = new Pacman(1, 1, "#FFFF00", 250, 300, 0, 0);
 
-	objects = [pacman, 
-		new Ghost(19, 15, "#FF0000", 300, 250, -1, 0),
-		new Ghost(18, 15, "#FF00FF", 300, 250, -1, 0),
-		new Ghost(16, 15, "#00FFFF", 300, 250, -1, 0),
-		new Ghost(14, 15, "#00FF00", 300, 250, -1, 0),
-
-		];
+	objects = [];
+	objects.push(pacman);
+	objects.push(new Ghost(19, 15, "#FF0000", 300, 250, -1, 0));
+	objects.push(new Ghost(18, 15, "#FF00FF", 300, 250, -1, 0));
+	objects.push(new Ghost(16, 15, "#00FFFF", 300, 250, -1, 0));
+	objects.push(new Ghost(14, 15, "#00FF00", 300, 250, -1, 0));
 	loop();
 
 	// map.forEach(function (row) {
