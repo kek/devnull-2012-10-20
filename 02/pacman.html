@@ -103,11 +103,20 @@ function draw() {
 		}		
 	}
 
+	for (var i = 0; i < objects.length; i++) {
+		var o = objects[i];
+		o.draw();
+	}
+
 	pacman.draw();
 }
 
 function logic() {
-	pacman.move();
+
+	for (var i = 0; i < objects.length; i++) {
+		var o = objects[i];
+		o.move();
+	}
 }
 
 var Pacman = function(){
@@ -122,8 +131,8 @@ var Pacman = function(){
 	this.speed = 250;
 	
 	this.init = function(){
-		for(var x=0; x<16; x++){
-			for(var y=0; y<10; y++){
+		for(var x=0; x<21; x++){
+			for(var y=0; y<17; y++){
 				if( !wallAt(x,y) ){
 					this.x = x;
 					this.y = y;
@@ -184,6 +193,115 @@ var Pacman = function(){
         context.stroke();
         context.lineWidth = ts;
         context.strokeStyle = "#FFFF00";
+        context.stroke();
+
+	}
+	this.move = function(){
+	
+		if (new Date().getTime() - this.isMoving > this.speed) {
+			this.isMoving = 0;
+			this.x += this.ax;
+			this.y += this.ay;
+			this.ax = 0;
+			this.ay = 0;
+		}
+
+		if (this.isMoving == 0) {
+			if (!wallAt(this.x + this.dx, this.y + this.dy)) {
+				this.ax = this.dx;
+				this.ay = this.dy;
+				this.isMoving = new Date().getTime();
+			}
+		}  
+
+		return;
+	}
+};
+function isObjectAt(x, y){
+	for (var i = 0; i < objects.length; i++) {
+		if( objects[i].x==x && objects[i].y==y ){
+			return true;
+		}
+	}
+	return false;
+}
+
+var Ghost = function(){
+	this.x=0;
+	this.y=0;
+	this.dx=0;
+	this.dy=0;
+	this.ax = 0;
+	this.ay = 0;
+	this.isMoving=0;
+
+	this.speed = 250;
+	
+	this.init = function(){
+		for(var x=20; x>=0; x--){
+			for(var y=16; y>=0; y--){
+				if( !wallAt(x,y) ){
+					if( !isObjectAt(x,y) ){
+						this.x = x;
+						this.y = y;
+						this.a1x=this.x*tilesize;
+						this.a1y=this.y*tilesize;
+						console.log("init ghost x=", this.x, " y=", this.y);
+						return;
+					}
+				}
+			}
+		}
+		
+	}
+	this.init();
+	
+	this.setDirection = function(dx, dy){
+		if (!wallAt(this.x + dx + this.ax, this.y + dy + this.ay)) {
+			this.dx=dx;
+			this.dy=dy;
+		}
+		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
+	}
+
+	this.animValue = function() {
+		var ts = new Date().getTime();
+		var m = Math.min(this.speed, ts - this.isMoving);
+		var v = m / this.speed; 
+
+		return v;
+	}
+	
+	this.draw = function(){
+		var ts = tilesize;
+		context.fillStyle="#FF00FF";
+        context.beginPath();
+        var arcStart = 0;
+        var arcEnd = Math.PI * (new Date().getTime()%1000/10000);
+
+
+        if(this.ax==-1){
+        	arcStart=Math.PI;
+        }else if(this.ax==1){
+        	arcStart=0;
+        }else if(this.ay==-1){
+        	arcStart=Math.PI*3/2;
+        }else if(this.ay==1){
+        	arcStart=Math.PI/2;
+        }
+
+        var anim = this.isMoving > 0 ? this.animValue() : 0;
+		var x = this.x * ts + (ts * anim) * this.ax; 
+		var y = this.y * ts + (ts * anim) * this.ay;
+
+        context.arc(x+ts/2, y+ts/2, ts/2, arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
+        //context.fillStyle = "#FFFF00";
+        //context.fill();
+        context.lineWidth = ts/2;
+        context.strokeStyle = "#000000";
+        context.stroke();
+        context.lineWidth = ts;
+        context.strokeStyle = "#FF00FF";
         context.stroke();
 
 	}
@@ -334,6 +452,12 @@ function init(seed) {
 
 	openUpMap(map);
 	pacman = new Pacman();
+	objects = [];
+	objects.push(pacman);
+	objects.push(new Ghost());
+	objects.push(new Ghost());
+	objects.push(new Ghost());
+	objects.push(new Ghost());
 	loop();
 
 	// map.forEach(function (row) {
