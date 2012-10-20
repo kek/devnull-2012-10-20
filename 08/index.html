@@ -221,7 +221,7 @@ var Hunter = function(x, y) {
 
 Hunter.prototype = {
 	isAlive: function() {
-		return this.ticks < 10;	
+		return this.ticks < 40;	
 	},
 
   nearbyGrazers: function() {
@@ -289,6 +289,8 @@ var food;
 var grazers;
 var rnd;
 var gticks = 0;
+var spawnedHunters = 0;
+var spawnedGrazers = 0;
 
 function randomInt(max) {
 	return Math.floor(rnd.random() * max);
@@ -311,6 +313,12 @@ function grazerAt(x, y) {
 	return a.length > 0 ? a[0] : null;
 }
 
+function hunterAt(x, y) {
+	var a = hunters.filter(function(item) {
+		return item.x == x && item.y == y;
+	});
+	return a.length > 0 ? a[0] : null;
+}
 function spawnFood() {
 
 	for (var i = 0; i < 10; i++) {
@@ -351,7 +359,7 @@ function spawnGrazers() {
 
 function spawnHunters() {
 
-	for (var i = 0; i < 5; i++) {
+	for (var i = 0; i < 10; i++) {
 
 		var x = randomInt(100);
 		var y = randomInt(100);
@@ -387,10 +395,24 @@ function spawnRandomGrazer(grazer) {
 		g.moveRandom();
 	}
 
+	spawnedGrazers++;
 //	console.log("Spawn grazer");
 	grazers.push(g);
 }
 
+function spawnRandomHunter(animal) {
+	var a = createHunter(animal.x, animal.y);
+	hunters.pop();
+	
+	while (hunterAt(a.x, a.y)) {
+		a.moveRandom();
+	}
+
+	spawnedHunters++;
+
+//	console.log("Spawn grazer");
+	hunters.push(a);
+}
 function moveGrazer(grazer) {
 	var nearbyFoods = grazer.nearbyFoods();
 	if( nearbyFoods.length>0 ){
@@ -400,6 +422,14 @@ function moveGrazer(grazer) {
 	}
 }
 
+function moveHunter(hunter) {
+	var nearby = hunter.nearbyGrazers();
+	if( nearby.length>0 ){
+		hunter.moveToward(nearby[0]);
+	}else{
+		hunter.moveRandom();
+	}
+}
 function updateHunters() {
 
 	for (var i = hunters.length - 1; i >= 0; i--) {
@@ -422,8 +452,8 @@ function updateHunters() {
 				grazers.splice(grazers.indexOf(g), 1);
 //				console.log("Eat grazer!", hunter.eaten, hunters.length, gticks);
 
-				if (hunter.eaten >= 5) {
-//					spawnRandomHunter(grazer);
+				if (hunter.eaten >= 1) {
+					spawnRandomHunter(hunter);
 				}
 			}
 
@@ -525,7 +555,7 @@ function updateGrazers() {
 			if (grazers.length > 0) {
 				loop();
 			} else {
-				console.log("Died after ", gticks, " ticks");
+				console.log("Died after ", gticks, " ticks seed: ", seed, " 	spawnedGrazers ", spawnedGrazers, " spawnedHunters", spawnedHunters);
 			}
 		},50);
 	}
