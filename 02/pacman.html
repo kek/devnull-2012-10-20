@@ -226,7 +226,7 @@ Pacman.prototype.draw = function(){
     var anim = this.isMoving > 0 ? this.animValue() : 0;
 	var x = this.x * ts + (ts * anim) * this.ax; 
 	var y = this.y * ts + (ts * anim) * this.ay;
-	var factor = this.superpowered ? 1 : 2;
+	var factor = this.superpowered > (new Date().getTime()) ? 1 : 2;
 
     context.arc(x+ts/2, y+ts/2, ts/(2 * factor), arcStart + Math.PI*arcEnd, arcStart-Math.PI*arcEnd, false);
     context.lineWidth = ts / factor;
@@ -236,7 +236,7 @@ Pacman.prototype.draw = function(){
 };
 
 Pacman.prototype.eatPill = function(){
-	this.superpowered = 1;
+	this.superpowered = new Date().getTime() + 5000;
 	console.log("*** Pacman.prototype.eatPill() is not implemented");
 };
 
