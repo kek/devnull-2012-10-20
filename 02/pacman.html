@@ -31,6 +31,7 @@
 
 var seed = 0;
 var tilesize = 20;
+var objects;
 var mapInit = [
 "#####################",
 "#                   #",
@@ -114,14 +115,8 @@ var Pacman = function(){
 	this.y=0;
 	this.dx=1;
 	this.dy=0;
-
-
 	this.ax = 0;
 	this.ay = 0;
-	this.a1x=0;
-	this.a1y=0;
-	this.a2x=0;
-	this.a2y=0;
 	this.isMoving=0;
 
 	this.speed = 250;
@@ -144,19 +139,11 @@ var Pacman = function(){
 	this.init();
 	
 	this.setDirection = function(dx, dy){
-		this.dx=dx;
-		this.dy=dy;
+		if (!wallAt(this.x + dx + this.ax, this.y + dy + this.ay)) {
+			this.dx=dx;
+			this.dy=dy;
+		}
 		//console.log("set direction pacman dx=", this.dx, " dy=", this.dy)
-	}
-	
-	this.getAnimX = function(){
-		var ts = new Date().getTime();
-		return this.a1x+(this.a2x-this.a1x)*250/Math.max(250,ts-this.isMoving);
-	}
-	
-	this.getAnimY = function(){
-		var ts = new Date().getTime();
-		return this.a1y+(this.a2y-this.a1y)*250/Math.max(250,ts-this.isMoving);
 	}
 
 	this.animValue = function() {
@@ -164,13 +151,11 @@ var Pacman = function(){
 		var m = Math.min(this.speed, ts - this.isMoving);
 		var v = m / this.speed; 
 
-		console.log(m, v);
-
 		return v;
 	}
 	
 	this.draw = function(){
-		var ts = tilesize/1.5;
+		var ts = tilesize;
 		context.fillStyle="#FFFF00";
         context.beginPath();
         var arcStart = 0;
