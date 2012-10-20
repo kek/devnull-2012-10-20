@@ -37,30 +37,36 @@ stdin.on('data',function(chunk){ // called on each line of input
 
   	if (cmd === "set") {
 
-  		var server = servers[serverIndex];
-		var options = 	{
-			host: server.host,
-			port: server.port, 
-			path: "/set?value=" + param,
-			method: "GET"
-		};
 
-  		console.log("Setting value");
+  		var fn = function() {
+	  		var server = servers[serverIndex];
+			var options = 	{
+				host: server.host,
+				port: server.port, 
+				path: "/set?value=" + param,
+				method: "GET"
+			};
 
-		var rq = http.request(options, function(result) {
+	  		console.log("Setting value");
 
-			result.on("data", function(data) {
-				console.log("Set value to " + server.host + ":" + server.port + " data: ", data.toString());
+			var rq = http.request(options, function(result) {
+
+				result.on("data", function(data) {
+					console.log("Set value to " + server.host + ":" + server.port + " data: ", data.toString());
+				});
+
 			});
 
-		});
+			rq.on("error", function(error) {
+				console.log("Failed to reach server " + server.host + ":" + server.port + " Error: ", error);
+				serverIndex = (serverIndex + 1) % servers.length;
+				fn();
+			});
 
-		rq.on("error", function(error) {
-			console.log("Failed to reach server " + server.host + ":" + server.port + " Error: ", error);
-			serverIndex = (serverIndex + 1) % servers.length;
-		});
+			rq.end(); 
+		}
 
-		rq.end(); 
+		fn();
   	}
 
 
@@ -74,29 +80,34 @@ stdin.on('data',function(chunk){ // called on each line of input
   	}
  	if (cmd === "read") {
 
-  		var server = servers[serverIndex];
-		var options = 	{
-			host: server.host,
-			port: server.port, 
-			path: "/read",
-			method: "GET"
-		};
+ 		var fn = function() {
+	  		var server = servers[serverIndex];
+			var options = 	{
+				host: server.host,
+				port: server.port, 
+				path: "/read",
+				method: "GET"
+			};
 
-  		console.log("Reading value");
+	  		console.log("Reading value");
 
-		var rq = http.request(options, function(result) {
-			result.on("data", function(data) {
-				console.log("Read value from " + server.host + ":" + server.port + " data: ", data.toString());
+			var rq = http.request(options, function(result) {
+				result.on("data", function(data) {
+					console.log("Read value from " + server.host + ":" + server.port + " data: ", data.toString());
+				});
+
 			});
 
-		});
+			rq.on("error", function(error) {
+				console.log("Failed to reach server " + server.host + ":" + server.port + " Error: ", error);
+				serverIndex = (serverIndex + 1) % servers.length;
+				fn();
+			});
 
-		rq.on("error", function(error) {
-			console.log("Failed to reach server " + server.host + ":" + server.port + " Error: ", error);
-			serverIndex = (serverIndex + 1) % servers.length;
-		});
+			rq.end();  		
+		}
 
-		rq.end();  		
+		fn();
   	}
 
   }
@@ -105,3 +116,6 @@ stdin.on('data',function(chunk){ // called on each line of input
 }).on('end',function(){ // called when stdin closes (via ^D)
   console.log('stdin:closed');
 });
+
+
+
