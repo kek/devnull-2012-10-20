@@ -273,9 +273,10 @@ Ghost.prototype.draw = function(){
 	context.fillStyle = this.color; 
 	context.fillRect(x + 5, y + 5, ts - 10, ts - 10);
 };
-
+var rnd;
 function randomInt(max) {
-	return Math.floor(rnd.random() * max);
+	rnd.random();
+	return Math.floor(rnd.random() * 2312314123) % max;
 }
 
 Ghost.prototype.move = function(){
@@ -287,22 +288,26 @@ Ghost.prototype.move = function(){
 		this.ax = 0;
 		this.ay = 0;
 		
-		for(var nx=0,ny=0;nx==0&&ny==0;){
-			var r = randomInt(4);
-			if(r==0){
+		var nx=0,ny=0,ra;
+		//while(wallAt(this.x + nx, this.y + ny) || (nx === 0 && ny === 0) || (nx === -this.dx && ny === this.dy) || (nx === this.dx && ny === -this.dy)){
+
+		for(nx=0,ny=0;nx==0&&ny==0;){
+			ra = Math.floor(Math.random()*100000)%4;
+			console.log(ra);
+			if(ra==0){
 				nx=1;
-			}else if(r==1){
+			}else if(ra==1){
 				nx=-1;
-			}else if(r==2){
+			}else if(ra==2){
 				ny=1;
-			}else{
+			}else if (ra==3){
 				ny=-1;
 			}
-			if( wallAt(nx,ny) ){
+			if( wallAt(this.x + nx, this.y + ny) ){
 				nx=ny=0;	
 			}else{
 				this.setDirection(nx,ny);
-				console.log("r=", r, " nx=",nx," ny=",ny)
+				console.log("ra=", ra, " nx=",nx," ny=",ny)
 				break;
 			}
 		}
