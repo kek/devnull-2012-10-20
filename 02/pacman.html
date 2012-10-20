@@ -43,18 +43,14 @@ var mapInit = [
 "################"
 ];
 
-map = openUpMap(mapInit);
-
-map.forEach(function (row) {
-	console.log(row);
-});
+var map = [];
 
 function openUpMap(map) {
 	var rnd = new MersenneTwister(1);
 
 	for(i = 0; i < map.length; i++) {
 		if(map[i] == "# ############ #") {
-			var hole = Math.floor(rnd.random() * (map[i].length - 2));
+			var hole = 2 + Math.floor(rnd.random() * (map[i].length - 4));
 			;
 			console.log(hole);
 		}
@@ -102,12 +98,14 @@ function drawWalls(context, x, y) {
 }
 
 function init( ) {
-
-	map = [];
 	for (var y = 0; y < mapInit.length; y++) {
 		map.push(mapInit[y].split(""));
 	}
+	openUpMap(mapInit);
 
+	map.forEach(function (row) {
+		console.log(row);
+	});
 }
 
 init();
